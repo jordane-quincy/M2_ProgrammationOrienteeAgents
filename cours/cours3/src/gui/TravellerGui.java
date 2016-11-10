@@ -23,7 +23,7 @@ import jade.gui.GuiEvent;
 
 /**
  * Journey resarch Gui, communication with TravellerAgent throw GuiEvent
- * 
+ *
  * @author modif. Emmanuel Adam - LAMIH
  */
 @SuppressWarnings("serial")
@@ -55,8 +55,9 @@ public class TravellerGui extends JFrame {
 		noAcheteurGuiCN = ++nbAcheteurGuiCN;
 
 		myAgent = a;
-		if (a != null)
+		if (a != null) {
 			setTitle(myAgent.getLocalName());
+		}
 
 		jTextArea = new JTextArea();
 		jTextArea.setBackground(new Color(255, 255, 240));
@@ -118,7 +119,7 @@ public class TravellerGui extends JFrame {
 		sliderTime.addChangeListener(event -> {
 			int hh = sliderTime.getValue() / 100;
 			int mm = (int) (sliderTime.getValue() % 100 / 100d * 60d);
-			String smm = (mm < 10) ? ("0" + mm) : String.valueOf(mm);
+			String smm = mm < 10 ? "0" + mm : String.valueOf(mm);
 			lblPrice.setText("Departure: " + hh + ":" + smm);
 			lblPrice.repaint();
 		});
@@ -150,8 +151,8 @@ public class TravellerGui extends JFrame {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int screenWidth = (int) screenSize.getWidth();
 		int width = this.getWidth();
-		int xx = (noAcheteurGuiCN * width) % screenWidth;
-		int yy = ((noAcheteurGuiCN * width) / screenWidth) * getHeight();
+		int xx = noAcheteurGuiCN * width % screenWidth;
+		int yy = noAcheteurGuiCN * width / screenWidth * getHeight();
 		setLocation(xx, yy);
 		setTitle(myAgent.getLocalName());
 		setVisible(true);
