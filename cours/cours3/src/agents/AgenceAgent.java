@@ -86,4 +86,12 @@ public class AgenceAgent extends GuiAgent {
 		System.err.println("Agent : " + getAID().getName() + " quitte la plateforme.");
 		window.dispose();
 	}
+
+	public JourneysList getCatalog() {
+		return catalog;
+	}
+
+	public void setCatalog(JourneysList catalog) {
+		this.catalog = catalog;
+	}
 }
