@@ -1,5 +1,0 @@
-creation catalog
-do setup
-JourneyListCatalog = new JourneyList();
-catalog.addJourney("Valenciennes", "Lille", "car", 1440, 30);
-catalog.addJourney("Valenciennes", "Lille", "train", 1440, 40);
