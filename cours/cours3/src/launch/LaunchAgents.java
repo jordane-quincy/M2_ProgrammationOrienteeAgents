@@ -24,9 +24,9 @@ public class LaunchAgents {
 			agents += "agence" + i + ":agents.AgenceAgent;";
 		}
 		// Creation des travellers
-		// for (int i = 0; i < 2; i++) {
-		// agents += "traveller" + i + ":agents.TravellerAgent;";
-		// }
+		for (int i = 0; i < 2; i++) {
+			agents += "traveller" + i + ":agents.TravellerAgent;";
+		}
 
 		jadeArgs[1] = agents;
 

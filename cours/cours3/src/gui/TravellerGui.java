@@ -38,6 +38,11 @@ public class TravellerGui extends JFrame {
 	/** window color */
 	Color color;
 
+	/** nb of windows created */
+	static int nb = 0;
+	/** no of the window */
+	int no;
+
 	private TravellerAgent myAgent;
 	private JLabel lblPrice;
 	private JComboBox<String> jListFrom;
@@ -144,6 +149,21 @@ public class TravellerGui extends JFrame {
 		});
 
 		setResizable(true);
+
+		final int preferedWidth = 500;
+		final int preferedHeight = 300;
+		no = nb++;
+
+		final Toolkit toolkit = Toolkit.getDefaultToolkit();
+		Dimension screenSize = toolkit.getScreenSize();
+		int screenWidth = screenSize.width;
+		int screenHeight = screenSize.height;
+		int dX = preferedWidth;
+		int x = no * dX % screenWidth;
+		int y = preferedHeight + no * dX / screenWidth * preferedHeight % screenHeight;
+
+		setBounds(x, y, preferedWidth, preferedHeight);
+		setVisible(true);
 	}
 
 	public void display() {
