@@ -196,10 +196,4 @@ public class TravellerGui extends JFrame {
 		return nbElements;
 	}
 
-	public static void main(String[] args) {
-		TravellerAgent travellerAgent1 = new TravellerAgent();
-		TravellerGui test = new TravellerGui(travellerAgent1);
-		test.setVisible(true);
-	}
-
 }
