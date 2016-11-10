@@ -16,6 +16,9 @@ import jade.lang.acl.ACLMessage;
 @SuppressWarnings("serial")
 public class AgenceAgent extends GuiAgent {
 
+	/** code to quit */
+	public static final int EXIT = -1;
+
 	/** little gui to display debug messages */
 	public SimpleGui4Agent window;
 

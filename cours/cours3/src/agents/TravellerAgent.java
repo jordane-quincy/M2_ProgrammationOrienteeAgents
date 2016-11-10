@@ -16,6 +16,11 @@ import jade.lang.acl.ACLMessage;
 @SuppressWarnings("serial")
 public class TravellerAgent extends GuiAgent {
 
+	/** code to buy travel */
+	public static final int BUY_TRAVEL = 42;
+	/** code to quit */
+	public static final int EXIT = -1;
+
 	/** little gui to display debug messages */
 	public SimpleGui4Agent window;
 
