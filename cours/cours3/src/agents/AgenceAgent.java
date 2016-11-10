@@ -17,7 +17,7 @@ import jade.lang.acl.ACLMessage;
 public class AgenceAgent extends GuiAgent {
 
 	/** code to quit */
-	public static final int EXIT = -1;
+	public static final int EXIT = -11;
 
 	/** little gui to display debug messages */
 	public SimpleGui4Agent window;
@@ -54,15 +54,17 @@ public class AgenceAgent extends GuiAgent {
 		});
 
 	}
+
 	/*
 	 * Initialize journey
 	 */
-	private void setupCatalog(){
+	private void setupCatalog() {
 		catalog = new JourneysList();
 		catalog.addJourney("Valenciennes", "Lille", "car", 1440, 30);
 		catalog.addJourney("Valenciennes", "Lille", "train", 1440, 40);
 		catalog.addJourney("Valenciennes", "Lille", "train", 1440, 40);
 	}
+
 	private void sendHello() {
 		neighbourgs = AgentToolsEA.searchAgents(this, "cordialite", null);
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
