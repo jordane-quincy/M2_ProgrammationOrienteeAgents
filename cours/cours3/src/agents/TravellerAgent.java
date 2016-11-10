@@ -1,9 +1,8 @@
 package agents;
 
 import data.JourneysList;
-import gui.SimpleGui4Agent;
+import gui.TravellerGui;
 import jade.core.AID;
-import jade.core.behaviours.CyclicBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.gui.GuiAgent;
@@ -22,10 +21,10 @@ public class TravellerAgent extends GuiAgent {
 	public static final int EXIT = -10;
 
 	/** little gui to display debug messages */
-	public SimpleGui4Agent window;
+	public TravellerGui window;
 
 	/** address (aid) of the other agents */
-	AID[] neighbourgs;
+	AID[] agences;
 
 	/** msg to send */
 	String helloMsg;
@@ -40,27 +39,29 @@ public class TravellerAgent extends GuiAgent {
 	protected void setup() {
 		String[] args = (String[]) this.getArguments();
 		helloMsg = args != null && args.length > 0 ? args[0] : "Hello";
-		window = new SimpleGui4Agent(this);
+		window = new TravellerGui(this);
 		window.println("Hello! ");
-		AgentToolsEA.register(this, "cordialite", "accueil");
+		// il ne s'enregisre pas pour le moment :
+		// AgentToolsEA.register(this,"cordialite", "accueil");
 
-		addBehaviour(new CyclicBehaviour(this) {
-			@Override
-			public void action() {
-				ACLMessage msg = myAgent.receive();
-				if (msg != null) {
-					window.println("j'ai recu un message de " + msg.getSender(), true);
-					window.println("voici le contenu : " + msg.getContent(), true);
-				}
-			}
-		});
+		// Pas de message reçu pour le moment :
+		// addBehaviour(new CyclicBehaviour(this) {
+		// @Override
+		// public void action() {
+		// ACLMessage msg = myAgent.receive();
+		// if (msg != null) {
+		// window.println("j'ai recu un message de " + msg.getSender(), true);
+		// window.println("voici le contenu : " + msg.getContent(), true);
+		// }
+		// }
+		// });
 
 	}
 
-	private void sendHello() {
-		neighbourgs = AgentToolsEA.searchAgents(this, "cordialite", null);
+	private void buyCmd() {
+		agences = AgentToolsEA.searchAgents(this, "agence", null);
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-		for (AID other : neighbourgs) {
+		for (AID other : agences) {
 			msg.addReceiver(other);
 		}
 		msg.setContent("vous avez le bonjour de " + this.getLocalName());
@@ -70,14 +71,10 @@ public class TravellerAgent extends GuiAgent {
 	@Override
 	protected void onGuiEvent(GuiEvent ev) {
 		switch (ev.getType()) {
-		case SimpleGui4Agent.SENDCODE:
-			sendHello();
+		case TravellerAgent.BUY_TRAVEL:
+			buyCmd();
 			break;
 		case TravellerAgent.EXIT:
-			window.dispose();
-			doDelete();
-			break;
-		case SimpleGui4Agent.QUITCODE:
 			window.dispose();
 			doDelete();
 			break;

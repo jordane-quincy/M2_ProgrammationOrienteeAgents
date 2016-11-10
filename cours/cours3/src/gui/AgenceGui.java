@@ -17,7 +17,7 @@ import jade.gui.GuiEvent;
 
 /**
  * Agence Gui, communication with AgenceAgent throw GuiEvent
- * 
+ *
  * @author Emmanuel Adam - LAMIH
  */
 @SuppressWarnings("serial")
@@ -31,6 +31,11 @@ public class AgenceGui extends JFrame {
 
 	/** window color */
 	Color color;
+
+	/** nb of windows created */
+	static int nb = 0;
+	/** no of the window */
+	int no;
 
 	private AgenceAgent myAgent;
 
@@ -61,6 +66,21 @@ public class AgenceGui extends JFrame {
 		});
 
 		setResizable(true);
+
+		final int preferedWidth = 500;
+		final int preferedHeight = 300;
+		no = nb++;
+
+		final Toolkit toolkit = Toolkit.getDefaultToolkit();
+		Dimension screenSize = toolkit.getScreenSize();
+		int screenWidth = screenSize.width;
+		int screenHeight = screenSize.height;
+		int dX = preferedWidth;
+		int x = no * dX % screenWidth;
+		int y = no * dX / screenWidth * preferedHeight % screenHeight;
+
+		setBounds(x, y, preferedWidth, preferedHeight);
+		setVisible(true);
 	}
 
 	public void display() {
@@ -68,8 +88,8 @@ public class AgenceGui extends JFrame {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int screenWidth = (int) screenSize.getWidth();
 		int width = this.getWidth();
-		int xx = (noVendeurGuiCN * width) % screenWidth;
-		int yy = ((noVendeurGuiCN * width) / screenWidth) * getHeight();
+		int xx = noVendeurGuiCN * width % screenWidth;
+		int yy = noVendeurGuiCN * width / screenWidth * getHeight();
 		setLocation(xx, yy);
 		setTitle(myAgent.getLocalName());
 		setVisible(true);

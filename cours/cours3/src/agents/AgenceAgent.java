@@ -1,9 +1,8 @@
 package agents;
 
 import data.JourneysList;
-import gui.SimpleGui4Agent;
+import gui.AgenceGui;
 import jade.core.AID;
-import jade.core.behaviours.CyclicBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.gui.GuiAgent;
@@ -20,7 +19,7 @@ public class AgenceAgent extends GuiAgent {
 	public static final int EXIT = -11;
 
 	/** little gui to display debug messages */
-	public SimpleGui4Agent window;
+	public AgenceGui window;
 
 	/** address (aid) of the other agents */
 	AID[] neighbourgs;
@@ -38,20 +37,21 @@ public class AgenceAgent extends GuiAgent {
 	protected void setup() {
 		String[] args = (String[]) this.getArguments();
 		helloMsg = args != null && args.length > 0 ? args[0] : "Hello";
-		window = new SimpleGui4Agent(this);
-		window.println("Hello! ");
-		AgentToolsEA.register(this, "cordialite", "accueil");
+		window = new AgenceGui(this);
+		window.println("Agence UP");
+		AgentToolsEA.register(this, "agence", null);
 
-		addBehaviour(new CyclicBehaviour(this) {
-			@Override
-			public void action() {
-				ACLMessage msg = myAgent.receive();
-				if (msg != null) {
-					window.println("j'ai recu un message de " + msg.getSender(), true);
-					window.println("voici le contenu : " + msg.getContent(), true);
-				}
-			}
-		});
+		// addBehaviour(new CyclicBehaviour(this) {
+		// @Override
+		// public void action() {
+		// ACLMessage msg = myAgent.receive();
+		// if (msg != null) {
+		// window.println("j'ai recu un message de " + msg.getSender(), true);
+		// window.println("voici le contenu : " + msg.getContent(), true);
+		// }
+		// }
+		// });
+
 		setupCatalog();
 	}
 
@@ -78,10 +78,7 @@ public class AgenceAgent extends GuiAgent {
 	@Override
 	protected void onGuiEvent(GuiEvent ev) {
 		switch (ev.getType()) {
-		case SimpleGui4Agent.SENDCODE:
-			sendHello();
-			break;
-		case SimpleGui4Agent.QUITCODE:
+		case AgenceAgent.EXIT:
 			window.dispose();
 			doDelete();
 			break;
