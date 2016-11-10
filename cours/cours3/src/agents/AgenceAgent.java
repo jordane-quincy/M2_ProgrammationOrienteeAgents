@@ -54,7 +54,15 @@ public class AgenceAgent extends GuiAgent {
 		});
 
 	}
-
+	/*
+	 * Initialize journey
+	 */
+	private void setupCatalog(){
+		catalog = new JourneysList();
+		catalog.addJourney("Valenciennes", "Lille", "car", 1440, 30);
+		catalog.addJourney("Valenciennes", "Lille", "train", 1440, 40);
+		catalog.addJourney("Valenciennes", "Lille", "train", 1440, 40);
+	}
 	private void sendHello() {
 		neighbourgs = AgentToolsEA.searchAgents(this, "cordialite", null);
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
