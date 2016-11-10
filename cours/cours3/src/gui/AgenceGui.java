@@ -23,8 +23,8 @@ import jade.gui.GuiEvent;
 @SuppressWarnings("serial")
 public class AgenceGui extends JFrame {
 
-	private static int nbVendeurGuiCN = 0;
-	private int noVendeurGuiCN;
+	private static int nbAgenceGui = 0;
+	private int noAgenceGui;
 
 	/** Text area */
 	JTextArea jTextArea;
@@ -36,7 +36,7 @@ public class AgenceGui extends JFrame {
 
 	public AgenceGui(AgenceAgent a) {
 		super(a.getName());
-		noVendeurGuiCN = ++nbVendeurGuiCN;
+		noAgenceGui = ++nbAgenceGui;
 
 		myAgent = a;
 
@@ -54,7 +54,7 @@ public class AgenceGui extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				// SEND AN GUI EVENT TO THE AGENT !!!
-				GuiEvent guiEv = new GuiEvent(this, AgenceAgent.EXIT);
+				GuiEvent guiEv = new GuiEvent(this, AgenceAgent.QUIT);
 				myAgent.postGuiEvent(guiEv);
 				// END SEND AN GUI EVENT TO THE AGENT !!!
 			}
@@ -68,8 +68,8 @@ public class AgenceGui extends JFrame {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int screenWidth = (int) screenSize.getWidth();
 		int width = this.getWidth();
-		int xx = (noVendeurGuiCN * width) % screenWidth;
-		int yy = ((noVendeurGuiCN * width) / screenWidth) * getHeight();
+		int xx = (noAgenceGui * width) % screenWidth;
+		int yy = ((noAgenceGui * width) / screenWidth) * getHeight();
 		setLocation(xx, yy);
 		setTitle(myAgent.getLocalName());
 		setVisible(true);

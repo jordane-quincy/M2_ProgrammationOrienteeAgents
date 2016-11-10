@@ -23,14 +23,14 @@ import jade.gui.GuiEvent;
 
 /**
  * Journey resarch Gui, communication with TravellerAgent throw GuiEvent
- *
+ * 
  * @author modif. Emmanuel Adam - LAMIH
  */
 @SuppressWarnings("serial")
 public class TravellerGui extends JFrame {
 
-	private static int nbAcheteurGuiCN = 0;
-	private int noAcheteurGuiCN;
+	private static int nbTravellerGui = 0;
+	private int noTravellerGui;
 
 	/** Text area */
 	JTextArea jTextArea;
@@ -52,12 +52,11 @@ public class TravellerGui extends JFrame {
 
 	public TravellerGui(TravellerAgent a) {
 		this.setBounds(10, 10, 600, 200);
-		noAcheteurGuiCN = ++nbAcheteurGuiCN;
+		noTravellerGui = ++nbTravellerGui;
 
 		myAgent = a;
-		if (a != null) {
+		if (a != null)
 			setTitle(myAgent.getLocalName());
-		}
 
 		jTextArea = new JTextArea();
 		jTextArea.setBackground(new Color(255, 255, 240));
@@ -87,7 +86,7 @@ public class TravellerGui extends JFrame {
 				time = sliderTime.getValue();
 				nbElements = 1;
 				// SEND AN GUI EVENT TO THE AGENT !!!
-				GuiEvent guiEv = new GuiEvent(this, TravellerAgent.BUY_TRAVEL);
+				GuiEvent guiEv = new GuiEvent(this, TravellerAgent.SEARCH_TRAVEL);
 				guiEv.addParameter(departure);
 				guiEv.addParameter(arrival);
 				guiEv.addParameter(time);
@@ -119,7 +118,7 @@ public class TravellerGui extends JFrame {
 		sliderTime.addChangeListener(event -> {
 			int hh = sliderTime.getValue() / 100;
 			int mm = (int) (sliderTime.getValue() % 100 / 100d * 60d);
-			String smm = mm < 10 ? "0" + mm : String.valueOf(mm);
+			String smm = (mm < 10) ? ("0" + mm) : String.valueOf(mm);
 			lblPrice.setText("Departure: " + hh + ":" + smm);
 			lblPrice.repaint();
 		});
@@ -137,7 +136,7 @@ public class TravellerGui extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				// SEND AN GUI EVENT TO THE AGENT !!!
-				GuiEvent guiEv = new GuiEvent(this, TravellerAgent.EXIT);
+				GuiEvent guiEv = new GuiEvent(this, TravellerAgent.QUIT);
 				myAgent.postGuiEvent(guiEv);
 				// END SEND AN GUI EVENT TO THE AGENT !!!
 			}
@@ -151,8 +150,8 @@ public class TravellerGui extends JFrame {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int screenWidth = (int) screenSize.getWidth();
 		int width = this.getWidth();
-		int xx = noAcheteurGuiCN * width % screenWidth;
-		int yy = noAcheteurGuiCN * width / screenWidth * getHeight();
+		int xx = (noTravellerGui * width) % screenWidth;
+		int yy = ((noTravellerGui * width) / screenWidth) * getHeight();
 		setLocation(xx, yy);
 		setTitle(myAgent.getLocalName());
 		setVisible(true);
@@ -194,6 +193,11 @@ public class TravellerGui extends JFrame {
 	 */
 	public int getNbElements() {
 		return nbElements;
+	}
+
+	public static void main(String[] args) {
+		TravellerGui test = new TravellerGui(null);
+		test.setVisible(true);
 	}
 
 }

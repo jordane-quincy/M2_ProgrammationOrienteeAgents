@@ -1,98 +1,180 @@
 package agents;
 
+import java.awt.Color;
+
 import data.JourneysList;
-import gui.SimpleGui4Agent;
+import gui.TravellerGui;
 import jade.core.AID;
-import jade.core.behaviours.CyclicBehaviour;
-import jade.domain.DFService;
-import jade.domain.FIPAException;
+import jade.core.behaviours.OneShotBehaviour;
+import jade.core.behaviours.SequentialBehaviour;
+import jade.core.behaviours.WakerBehaviour;
 import jade.gui.GuiAgent;
 import jade.gui.GuiEvent;
 import jade.lang.acl.ACLMessage;
 
 /**
- * an agent that say hello * @author eadam
+ * Journey searcher
+ * 
+ * @author Emmanuel ADAM
  */
 @SuppressWarnings("serial")
 public class TravellerAgent extends GuiAgent {
+	/** code to quit the agent from gui */
+	public static final int QUIT = 0;
+	/** code to search a travel from gui */
+	public static final int SEARCH_TRAVEL = 1;
 
-	/** code to buy travel */
-	public static final int BUY_TRAVEL = 42;
-	/** code to quit */
-	public static final int EXIT = -10;
-
-	/** little gui to display debug messages */
-	public SimpleGui4Agent window;
-
-	/** address (aid) of the other agents */
-	AID[] neighbourgs;
-
-	/** msg to send */
-	String helloMsg;
-
-	/** */
-	private JourneysList catalog;
+	/** liste des vendeurs */
+	protected AID[] vendeurs;
 
 	/**
-	 * initialize the agent <br>
+	 * preference between journeys -, cost, co2, duration or confort ("-" = cost
+	 * by defaul)}
 	 */
+	private String sortMode;
+
+	/** catalog received by the sellers */
+	protected JourneysList catalogs;
+
+	/** gui */
+	private TravellerGui window;
+
+	/** Initialisation de l'agent */
 	@Override
 	protected void setup() {
-		String[] args = (String[]) this.getArguments();
-		helloMsg = args != null && args.length > 0 ? args[0] : "Hello";
-		window = new SimpleGui4Agent(this);
-		window.println("Hello! ");
-		AgentToolsEA.register(this, "cordialite", "accueil");
+		this.window = new TravellerGui(this);
+		window.setColor(Color.cyan);
+		window.println("Hello! AgentAcheteurCN " + this.getLocalName() + " est pret. ");
+		window.setVisible(true);
+	}
 
-		addBehaviour(new CyclicBehaviour(this) {
+	// 'Nettoyage' de l'agent
+	@Override
+	protected void takeDown() {
+		window.println("Je quitte la plateforme. ");
+	}
+
+	///// SETTERS AND GETTERS
+	/**
+	 * @return agent gui
+	 */
+	public TravellerGui getWindow() {
+		return window;
+	}
+
+	/**
+	 * try to find a journey : create a sequential behaviour with 3
+	 * subbehaviours : search sellers, ask for catalogs, find if the journey is
+	 * possible
+	 * 
+	 * @param from
+	 *            origin
+	 * @param to
+	 *            arrival
+	 * @param departure
+	 *            date of departure
+	 * @param preference
+	 *            choose the best (in cost, co2, confort, ...)
+	 */
+	private void buyJourney(final String from, final String to, final int departure, final String preference) {
+
+		sortMode = preference;
+		window.println("recherche de voyage de " + from + " vers " + to + " à partir de " + departure);
+
+		final SequentialBehaviour seqB = new SequentialBehaviour(this);
+		seqB.addSubBehaviour(new OneShotBehaviour(this) {
+			/** ask the DFAgent for agents that are in the travel agency */
 			@Override
 			public void action() {
-				ACLMessage msg = myAgent.receive();
-				if (msg != null) {
-					window.println("j'ai recu un message de " + msg.getSender(), true);
-					window.println("voici le contenu : " + msg.getContent(), true);
+				vendeurs = AgentToolsEA.searchAgents(myAgent, "travel agency", null);
+			}
+		});
+		seqB.addSubBehaviour(new OneShotBehaviour(this) {
+			/** add a behaviour to ask a catalog of journeys to the sellers */
+			@Override
+			public void action() {
+				myAgent.addBehaviour(new Ask4Catalog(myAgent, new ACLMessage(ACLMessage.INFORM)));
+			}
+		});
+		seqB.addSubBehaviour(new WakerBehaviour(this, 100) {
+			/**
+			 * display the merged catalog and try to find the best journey that
+			 * corresponds to the data sent by the gui
+			 */
+			@Override
+			protected void onWake() {
+
+				if (catalogs != null) {
+					println("here is my catalog : ");
+					println(" -> " + catalogs);
+					computeComposedJourney(from, to, departure, preference);
+
+				}
+				if (catalogs == null) {
+					println("I have no catalog !!! ");
 				}
 			}
 		});
 
+		addBehaviour(seqB);
+
 	}
 
-	private void sendHello() {
-		neighbourgs = AgentToolsEA.searchAgents(this, "cordialite", null);
-		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-		for (AID other : neighbourgs) {
-			msg.addReceiver(other);
-		}
-		msg.setContent("vous avez le bonjour de " + this.getLocalName());
-		send(msg);
+	/** compute a journey composed of several journey to meet the needs */
+	private void computeComposedJourney(final String from, final String to, final int departure,
+			final String preference) {
 	}
 
+	/** get event from the GUI */
 	@Override
-	protected void onGuiEvent(GuiEvent ev) {
-		switch (ev.getType()) {
-		case SimpleGui4Agent.SENDCODE:
-			sendHello();
-			break;
-		case TravellerAgent.EXIT:
-			window.dispose();
+	protected void onGuiEvent(final GuiEvent eventFromGui) {
+		if (eventFromGui.getType() == TravellerAgent.QUIT) {
 			doDelete();
-			break;
-		case SimpleGui4Agent.QUITCODE:
-			window.dispose();
-			doDelete();
-			break;
+		}
+		if (eventFromGui.getType() == TravellerAgent.SEARCH_TRAVEL) {
+			buyJourney((String) eventFromGui.getParameter(0), (String) eventFromGui.getParameter(1),
+					(Integer) eventFromGui.getParameter(2), (String) eventFromGui.getParameter(3));
 		}
 	}
 
-	@Override
-	protected void takeDown() {
-		// S'effacer du service pages jaunes
-		try {
-			DFService.deregister(this);
-		} catch (FIPAException fe) {
-			fe.printStackTrace();
-		}
-		System.err.println("Agent : " + getAID().getName() + " quitte la plateforme.");
-		window.dispose();
+	/**
+	 * @return the vendeurs
+	 */
+	public AID[] getVendeurs() {
+		return vendeurs.clone();
 	}
+
+	/**
+	 * @param vendeurs
+	 *            the vendeurs to set
+	 */
+	public void setVendeurs(final AID... vendeurs) {
+		this.vendeurs = vendeurs;
+	}
+
+	/** -, cost, co2, duration or confort */
+	public String getSortMode() {
+		return sortMode;
+	}
+
+	/**
+	 * print a message on the window lined to the agent
+	 * 
+	 * @param msg
+	 *            text to display in th window
+	 */
+	public void println(final String msg) {
+		window.println(msg);
+	}
+
+	/** @return the list of journeys */
+	public JourneysList getCatalogs() {
+		return catalogs;
+	}
+
+	/** set the list of journeys */
+	public void setCatalogs(final JourneysList catalogs) {
+		this.catalogs = catalogs;
+	}
+
 }

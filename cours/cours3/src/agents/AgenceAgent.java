@@ -1,110 +1,147 @@
+
 package agents;
 
+import java.io.IOException;
+import java.util.logging.Level;
+
+import data.Journey;
 import data.JourneysList;
-import gui.SimpleGui4Agent;
-import jade.core.AID;
-import jade.core.behaviours.CyclicBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.gui.GuiAgent;
 import jade.gui.GuiEvent;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
+import jade.proto.AchieveREResponder;
+import launch.LaunchSimu;
 
 /**
- * an agent that say hello * @author eadam
+ * Journey Seller
+ * 
+ * @author Emmanuel ADAM
  */
 @SuppressWarnings("serial")
 public class AgenceAgent extends GuiAgent {
+	/** code shared with the gui to add a journey */
+	public static final int ADD_TRAVEL = 1;
+	/** code shared with the gui to quit the agent */
+	public static final int QUIT = 0;
 
-	/** code to quit */
-	public static final int EXIT = -11;
-
-	/** little gui to display debug messages */
-	public SimpleGui4Agent window;
-
-	/** address (aid) of the other agents */
-	AID[] neighbourgs;
-
-	/** msg to send */
-	String helloMsg;
-
-	/** */
+	/** catalog of the proposed journeys */
 	private JourneysList catalog;
+	/** graphical user interface linked to the seller agent */
+	private gui.AgenceGui window;
 
-	/**
-	 * initialize the agent <br>
-	 */
+	// Initialisation de l'agent
 	@Override
 	protected void setup() {
-		String[] args = (String[]) this.getArguments();
-		helloMsg = args != null && args.length > 0 ? args[0] : "Hello";
-		window = new SimpleGui4Agent(this);
-		window.println("Hello! ");
-		AgentToolsEA.register(this, "cordialite", "accueil");
+		final Object[] args = getArguments(); // Recuperation des arguments
+		catalog = new JourneysList();
+		window = new gui.AgenceGui(this);
+		window.display();
 
-		addBehaviour(new CyclicBehaviour(this) {
+		// if (args != null && args.length > 0) {
+		// fromCSV2Catalog((String) args[0]);
+		// }
+		buildSampleCatalog();
+		window.println("here is my catalog : ");
+		window.println(catalog.toString());
+
+		AgentToolsEA.register(this, "travel agency", "seller");
+
+		// attendre une demande de catalogue
+		waitAsk4Catalog();
+
+	}
+
+	/**
+	 * Ask a behaviour that wait for a call for catalog
+	 */
+	private void waitAsk4Catalog() {
+		MessageTemplate mt = MessageTemplate.MatchConversationId("CATALOG_ASK");
+		addBehaviour(new AchieveREResponder(this, mt) {
 			@Override
-			public void action() {
-				ACLMessage msg = myAgent.receive();
-				if (msg != null) {
-					window.println("j'ai recu un message de " + msg.getSender(), true);
-					window.println("voici le contenu : " + msg.getContent(), true);
+			protected ACLMessage handleRequest(ACLMessage request) {
+				ACLMessage result = request.createReply();
+				result.setPerformative(ACLMessage.AGREE);
+				try {
+					result.setContentObject(catalog);
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
+				window.println("j'envoie mon catalogue à l'agent " + request.getSender().getLocalName());
+				return result;
 			}
 		});
-		setupCatalog();
 	}
 
-	/*
-	 * Initialize journey
-	 */
-	private void setupCatalog() {
-		catalog = new JourneysList();
-		catalog.addJourney("Valenciennes", "Lille", "car", 1440, 30);
-		catalog.addJourney("Valenciennes", "Lille", "train", 1440, 40);
-		catalog.addJourney("Valenciennes", "Lille", "train", 1440, 40);
-	}
-
-	private void sendHello() {
-		neighbourgs = AgentToolsEA.searchAgents(this, "cordialite", null);
-		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-		for (AID other : neighbourgs) {
-			msg.addReceiver(other);
-		}
-		msg.setContent("vous avez le bonjour de " + this.getLocalName());
-		send(msg);
-	}
-
-	@Override
-	protected void onGuiEvent(GuiEvent ev) {
-		switch (ev.getType()) {
-		case SimpleGui4Agent.SENDCODE:
-			sendHello();
-			break;
-		case SimpleGui4Agent.QUITCODE:
-			window.dispose();
-			doDelete();
-			break;
-		}
-	}
-
+	// Fermeture de l'agent
 	@Override
 	protected void takeDown() {
 		// S'effacer du service pages jaunes
 		try {
 			DFService.deregister(this);
 		} catch (FIPAException fe) {
-			fe.printStackTrace();
+			LaunchSimu.logger.log(Level.SEVERE, fe.getMessage());
 		}
-		System.err.println("Agent : " + getAID().getName() + " quitte la plateforme.");
+		LaunchSimu.logger.log(Level.INFO, "Agent Agence : " + getAID().getName() + " quitte la plateforme.");
 		window.dispose();
 	}
 
+	/**
+	 * methode invoquee par la gui
+	 */
+	@Override
+	protected void onGuiEvent(GuiEvent guiEvent) {
+		if (guiEvent.getType() == AgenceAgent.QUIT) {
+			doDelete();
+		}
+	}
+
+	/** build a sample cataog to test the agent */
+	private void buildSampleCatalog() {
+		catalog.addJourney(new Journey("dep", "pt1", "car", 1100, 10));
+		catalog.addJourney(new Journey("dep", "pt2", "car", 1120, 10));
+		catalog.addJourney(new Journey("pt1", "arr", "train", 1200, 15));
+	}
+
+	/**
+	 * initialize the catalog from a cvs file<br>
+	 * csv line = origine, destination,means,departureTime,duration,financial
+	 * cost, co2, confort, nbRepetitions(optional),frequence(optional)
+	 * 
+	 * @param file
+	 *            name of the cvs file
+	 */
+	void fromCSV2Catalog(final String file) {
+	}
+
+	/**
+	 * repeat a journey on a sequence of dates into a catalog
+	 * 
+	 * @param departureDate
+	 *            date of the first journey
+	 * @param nbRepetitions
+	 *            nb of journeys to add
+	 * @param frequence
+	 *            frequency of the journeys in minutes
+	 * @param journey
+	 *            the first journey to clone
+	 */
+	private void repeatJourney(final int departureDate, final int nbRepetitions, final int frequence,
+			final Journey journey) {
+	}
+
+	///// GETTERS AND SETTERS
+	public gui.AgenceGui getWindow() {
+		return window;
+	}
+
+	/**
+	 * @return the catalogue
+	 */
 	public JourneysList getCatalog() {
 		return catalog;
 	}
 
-	public void setCatalog(JourneysList catalog) {
-		this.catalog = catalog;
-	}
 }
