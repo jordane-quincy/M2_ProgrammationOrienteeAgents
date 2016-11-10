@@ -3,6 +3,8 @@ package agents;
 import gui.SimpleGui4Agent;
 import jade.core.AID;
 import jade.core.behaviours.CyclicBehaviour;
+import jade.domain.DFService;
+import jade.domain.FIPAException;
 import jade.gui.GuiAgent;
 import jade.gui.GuiEvent;
 import jade.lang.acl.ACLMessage;
@@ -67,5 +69,12 @@ public class HelloAgent extends GuiAgent {
 			break;
 		}
 	}
-
+	@Override
+	protected void takeDown() {
+	  // S'effacer du service pages jaunes
+	  try { DFService.deregister(this); } 
+	  catch (FIPAException fe) { fe.printStackTrace();}
+	  System.err.println("Agent : " + getAID().getName() + " quitte la plateforme.");
+	  window.dispose();
+	}
 }
