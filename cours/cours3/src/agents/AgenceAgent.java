@@ -49,7 +49,7 @@ public class AgenceAgent extends GuiAgent {
 				}
 			}
 		});
-
+		setupCatalog();
 	}
 	/*
 	 * Initialize journey
