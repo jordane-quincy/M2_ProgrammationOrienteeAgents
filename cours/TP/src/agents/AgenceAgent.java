@@ -140,8 +140,10 @@ public class AgenceAgent extends GuiAgent {
 					
 					int nbRepetition = (line.length == 10 ? Integer.parseInt(line[8].trim()) : 0);
 					int frequence = (line.length == 10 ? Integer.parseInt(line[9].trim()) : 0);
-					
 					catalog.addJourney(new Journey(from, to, means, heureDep, duree));
+					if (frequence > 0) {
+						repeatJourney(heureDep, nbRepetition, frequence, new Journey(from, to, means, heureDep, duree));
+					}
 				}
 			}
 		} catch (FileNotFoundException e) {
@@ -152,6 +154,7 @@ public class AgenceAgent extends GuiAgent {
 			e.printStackTrace();
 		}
 	}
+	
 
 	/**
 	 * repeat a journey on a sequence of dates into a catalog
@@ -165,10 +168,17 @@ public class AgenceAgent extends GuiAgent {
 	 * @param journey
 	 *            the first journey to clone
 	 */
-	private void repeatJourney(final int departureDate, final int nbRepetitions, final int frequence,
-			final Journey journey) {
+	private void repeatJourney(final int departureDate, final int nbRepetitions, final int frequence,final Journey journey) {
+	  int nextDeparture = departureDate;
+	  for (int i = 0; i < nbRepetitions; i++) {
+	    final Journey cloneJ = new Journey(journey);
+	    nextDeparture = Journey.addTime(nextDeparture, frequence);
+	    cloneJ.setDepartureDate(nextDeparture);
+	    window.println(cloneJ.toString());
+	    catalog.addJourney(cloneJ);
+	  }
 	}
-
+	
 	///// GETTERS AND SETTERS
 	public gui.AgenceGui getWindow() {
 		return window;
