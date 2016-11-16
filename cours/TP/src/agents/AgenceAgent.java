@@ -45,11 +45,11 @@ public class AgenceAgent extends GuiAgent {
 		window = new gui.AgenceGui(this);
 		window.display();
 
-		// if (args != null && args.length > 0) {
-		// fromCSV2Catalog((String) args[0]);
-		// }
+		 if (args != null && args.length > 0) {
+			 fromCSV2Catalog("./resources/csv/"+ (String) args[0]);
+		 }
 		
-		fromCSV2Catalog("./resources/csv/catalog1.csv");
+//		fromCSV2Catalog("./resources/csv/catalog1.csv");
 //		buildSampleCatalog();
 		
 		window.println("here is my catalog : ");
@@ -129,8 +129,11 @@ public class AgenceAgent extends GuiAgent {
 			
 			reader = new CSVReader(fr);
 			String [] line;
-			while ((line = reader.readNext()) != null) {
-				catalog.addJourney(new Journey(line[0], line[1], line[2], Integer.parseInt(line[3]), Integer.parseInt(line[4])));
+			if((line = reader.readNext()) != null){
+				//maintenant qu'on a deja lu la premiere ligne (en tete)
+				while ((line = reader.readNext()) != null) {
+					catalog.addJourney(new Journey(line[0], line[1], line[2], Integer.parseInt(line[3].trim()), Integer.parseInt(line[4].trim())));
+				}
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
