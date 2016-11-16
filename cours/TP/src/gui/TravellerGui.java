@@ -71,7 +71,7 @@ public class TravellerGui extends JFrame {
 		p.add(new JLabel("From:"));
 		p.add(new JLabel("To:"));
 
-		lblPrice = new JLabel("Departure: 8:00");
+		lblPrice = new JLabel("Departure: 9:30");
 		p.add(lblPrice);
 
 		p.add(new JLabel("Criteria"));
@@ -109,8 +109,9 @@ public class TravellerGui extends JFrame {
 
 		sliderTime = new JSlider();
 		sliderTime.setPreferredSize(new Dimension(100, 10));
-		sliderTime.setMinimum(800);
-		sliderTime.setMaximum(2200);
+		sliderTime.setMinimum(200);
+		sliderTime.setMaximum(2300);
+		sliderTime.setValue(950);
 		sliderTime.setMajorTickSpacing(100);
 		sliderTime.setMinorTickSpacing(25);
 		sliderTime.setSnapToTicks(true);
