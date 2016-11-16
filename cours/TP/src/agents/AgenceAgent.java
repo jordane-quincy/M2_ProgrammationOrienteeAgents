@@ -140,9 +140,10 @@ public class AgenceAgent extends GuiAgent {
 					
 					int nbRepetition = (line.length == 10 ? Integer.parseInt(line[8].trim()) : 0);
 					int frequence = (line.length == 10 ? Integer.parseInt(line[9].trim()) : 0);
-					catalog.addJourney(new Journey(from, to, means, heureDep, duree));
+					Journey j = new Journey(from, to, means, heureDep, duree);
+					catalog.addJourney(j);
 					if (frequence > 0) {
-						repeatJourney(heureDep, nbRepetition, frequence, new Journey(from, to, means, heureDep, duree));
+						repeatJourney(heureDep, nbRepetition, frequence, j);
 					}
 				}
 			}
