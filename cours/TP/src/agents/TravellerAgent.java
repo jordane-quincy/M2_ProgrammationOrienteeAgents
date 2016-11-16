@@ -1,11 +1,7 @@
 package agents;
 
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
 
-import data.ComposedJourney;
-import data.Journey;
 import data.JourneysList;
 import gui.TravellerGui;
 import jade.core.AID;
@@ -111,7 +107,6 @@ public class TravellerAgent extends GuiAgent {
 				if (catalogs != null) {
 					println("here is my catalog : ");
 					println(" -> " + catalogs);
-					println("*****************************************************");
 					computeComposedJourney(from, to, departure, preference);
 
 				}
@@ -128,17 +123,6 @@ public class TravellerAgent extends GuiAgent {
 	/** compute a journey composed of several journey to meet the needs */
 	private void computeComposedJourney(final String from, final String to, final int departure,
 			final String preference) {
-		boolean found = false;
-		ArrayList<Journey> currentJourney = new ArrayList<Journey>();
-		List<String> via = null;
-		ArrayList<ComposedJourney> results = new ArrayList<ComposedJourney>();
-		
-		found = catalogs.findIndirectJourney(from, to, departure, currentJourney, via, results);
-		if(found) {
-			for(int i = 0;i < results.size();i++){
-				//println();
-			}
-		}
 	}
 
 	/** get event from the GUI */

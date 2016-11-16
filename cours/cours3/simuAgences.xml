@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2016-11-16T13:51:39</date>
+  <millis>1479300699771</millis>
+  <sequence>10</sequence>
+  <logger>simu</logger>
+  <level>INFO</level>
+  <class>agents.AgenceAgent</class>
+  <method>takeDown</method>
+  <thread>28</thread>
+  <message>Agent Agence : vendeur2@10.4.111.215:1099/JADE quitte la plateforme.</message>
+</record>
+<record>
+  <date>2016-11-16T13:51:40</date>
+  <millis>1479300700644</millis>
+  <sequence>11</sequence>
+  <logger>simu</logger>
+  <level>INFO</level>
+  <class>agents.AgenceAgent</class>
+  <method>takeDown</method>
+  <thread>30</thread>
+  <message>Agent Agence : vendeur1@10.4.111.215:1099/JADE quitte la plateforme.</message>
+</record>

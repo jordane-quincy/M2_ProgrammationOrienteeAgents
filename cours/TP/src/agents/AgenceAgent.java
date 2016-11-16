@@ -103,10 +103,6 @@ public class AgenceAgent extends GuiAgent {
 		catalog.addJourney(new Journey("dep", "pt1", "car", 1100, 10));
 		catalog.addJourney(new Journey("dep", "pt2", "car", 1120, 10));
 		catalog.addJourney(new Journey("pt1", "arr", "train", 1200, 15));
-		catalog.addJourney(new Journey("Valenciennes", "Lille", "train", 1000, 30));
-		catalog.addJourney(new Journey("Valenciennes", "Cambrai", "train", 1400, 60));
-		catalog.addJourney(new Journey("Valenciennes", "Cambrai", "train", 1200, 15));
-		catalog.addJourney(new Journey("Cambrai", "Valenciennes", "train", 1200, 120));
 	}
 
 	/**
