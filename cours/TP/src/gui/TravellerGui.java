@@ -51,7 +51,7 @@ public class TravellerGui extends JFrame {
 	private int nbElements;
 
 	public TravellerGui(TravellerAgent a) {
-		this.setBounds(10, 200, 600, 200);
+		this.setBounds(10, 200, 600, 400);
 		noTravellerGui = ++nbTravellerGui;
 
 		myAgent = a;
