@@ -13,4 +13,9 @@ hs_err_pid*
 .metadata
 .recommenders
 /target/
+build/
 RemoteSystemsTempFiles
+
+#Fichiers logs de JADE
+APDescription.txt
+MTPs-Main-Container.txt
