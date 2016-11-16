@@ -132,7 +132,7 @@ public class AgenceAgent extends GuiAgent {
 			if((line = reader.readNext()) != null){
 				//maintenant qu'on a deja lu la premiere ligne (en tete)
 				while ((line = reader.readNext()) != null) {
-					catalog.addJourney(new Journey(line[0], line[1], line[2], Integer.parseInt(line[3].trim()), Integer.parseInt(line[4].trim())));
+					catalog.addJourney(new Journey(line[0].trim().toUpperCase(), line[1].trim().toUpperCase(), line[2].trim().toUpperCase(), Integer.parseInt(line[3].trim()), Integer.parseInt(line[4].trim())));
 				}
 			}
 		} catch (FileNotFoundException e) {

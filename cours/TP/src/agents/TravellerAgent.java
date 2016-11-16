@@ -136,7 +136,7 @@ public class TravellerAgent extends GuiAgent {
 		println("Pour aller vers : " + to);
 		println("A une heure : " + departure);
 		println("catalog : " + catalogs);
-		found = catalogs.findIndirectJourney(from, to, departure, currentJourney, via, results);
+		found = catalogs.findIndirectJourney(from.trim().toUpperCase(), to.trim().toUpperCase(), departure, currentJourney, via, results);
 		if(found) {
 			/*ComposedJourney composed_journey = null;
 			for(int i = 0;i < results.size();i++){
