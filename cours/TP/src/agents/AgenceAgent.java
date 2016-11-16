@@ -137,6 +137,10 @@ public class AgenceAgent extends GuiAgent {
 					String means = line[2].trim().toUpperCase();
 					int heureDep = Integer.parseInt(line[3].trim());
 					int duree = Integer.parseInt(line[4].trim());
+					
+					int nbRepetition = (line.length == 10 ? Integer.parseInt(line[8].trim()) : 0);
+					int frequence = (line.length == 10 ? Integer.parseInt(line[9].trim()) : 0);
+					
 					catalog.addJourney(new Journey(from, to, means, heureDep, duree));
 				}
 			}
