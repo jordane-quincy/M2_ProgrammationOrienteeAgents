@@ -2,6 +2,7 @@ package agents;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import data.ComposedJourney;
@@ -134,12 +135,19 @@ public class TravellerAgent extends GuiAgent {
 		
 		found = catalogs.findIndirectJourney(from, to, departure, currentJourney, via, results);
 		if(found) {
-			ComposedJourney composed_journey = null;
+			/*ComposedJourney composed_journey = null;
 			for(int i = 0;i < results.size();i++){
 				composed_journey = results.get(i);
 				
+			}*/
+			switch(preference){
+				case "cost": Collections.sort(results, (j1, j2)->(int)(j1.getCost() - j2.getCost()));
+				break;
+				case "confort": Collections.sort(results, (j1, j2)->(int)(j1.getCost() - j2.getCost()));
+				break;
 				
 			}
+			ComposedJourney best = results.get(0);
 		}
 	}
 
