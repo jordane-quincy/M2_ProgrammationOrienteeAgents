@@ -143,7 +143,7 @@ public class TravellerAgent extends GuiAgent {
 			switch(preference){
 				case "cost": Collections.sort(results, (j1, j2)->(int)(j1.getCost() - j2.getCost()));
 				break;
-				case "confort": Collections.sort(results, (j1, j2)->(int)(j1.getCost() - j2.getCost()));
+				case "confort": Collections.sort(results, (j1, j2)->(int)(j1.getConfort() - j2.getConfort()));
 				break;
 				
 			}
