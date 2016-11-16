@@ -3,6 +3,7 @@ package agents;
 import java.util.Vector;
 
 import data.JourneysList;
+import gui.TravellerGui;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
@@ -66,6 +67,14 @@ public class Ask4Catalog extends AchieveREInitiator {
 					catalogs.addJourneys(receivedCatalog);
 			}
 		}
+		//sort cataglos depending on preference
+		//On récupère le sortMode from the traveller agent
+		String sortMode = agent.getSortMode();
+		TravellerGui window = agent.getWindow();
+		window.println("pref : " + agent.getSortMode());
+		
+		
+		
 		agent.setCatalogs(catalogs);
 	}
 
