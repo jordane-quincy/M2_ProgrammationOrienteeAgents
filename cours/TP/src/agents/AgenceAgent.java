@@ -1,8 +1,13 @@
 
 package agents;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
 import java.util.logging.Level;
+
+import com.opencsv.CSVReader;
 
 import data.Journey;
 import data.JourneysList;
@@ -43,7 +48,10 @@ public class AgenceAgent extends GuiAgent {
 		// if (args != null && args.length > 0) {
 		// fromCSV2Catalog((String) args[0]);
 		// }
-		buildSampleCatalog();
+		
+		fromCSV2Catalog("./resources/csv/catalog1.csv");
+//		buildSampleCatalog();
+		
 		window.println("here is my catalog : ");
 		window.println(catalog.toString());
 
@@ -118,6 +126,23 @@ public class AgenceAgent extends GuiAgent {
 	 *            name of the cvs file
 	 */
 	void fromCSV2Catalog(final String file) {
+		CSVReader reader;
+		try {
+			URL urlFile = getClass().getClassLoader().getResource(file);			
+			FileReader fr = new FileReader(urlFile.getFile());
+			
+			reader = new CSVReader(fr);
+			String [] line;
+			while ((line = reader.readNext()) != null) {
+				catalog.addJourney(new Journey(line[0], line[1], line[2], Integer.parseInt(line[3]), Integer.parseInt(line[4])));
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
