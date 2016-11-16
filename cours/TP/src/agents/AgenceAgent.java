@@ -132,7 +132,12 @@ public class AgenceAgent extends GuiAgent {
 			if((line = reader.readNext()) != null){
 				//maintenant qu'on a deja lu la premiere ligne (en tete)
 				while ((line = reader.readNext()) != null) {
-					catalog.addJourney(new Journey(line[0].trim().toUpperCase(), line[1].trim().toUpperCase(), line[2].trim().toUpperCase(), Integer.parseInt(line[3].trim()), Integer.parseInt(line[4].trim())));
+					String from = line[0].trim().toUpperCase();
+					String to = line[1].trim().toUpperCase();
+					String means = line[2].trim().toUpperCase();
+					int heureDep = Integer.parseInt(line[3].trim());
+					int duree = Integer.parseInt(line[4].trim());
+					catalog.addJourney(new Journey(from, to, means, heureDep, duree));
 				}
 			}
 		} catch (FileNotFoundException e) {
