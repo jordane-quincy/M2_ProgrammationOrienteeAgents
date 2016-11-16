@@ -130,7 +130,7 @@ public class TravellerAgent extends GuiAgent {
 			final String preference) {
 		boolean found = false;
 		ArrayList<Journey> currentJourney = new ArrayList<Journey>();
-		List<String> via = null;
+		List<String> via = new ArrayList<String>();
 		ArrayList<ComposedJourney> results = new ArrayList<ComposedJourney>();
 		
 		found = catalogs.findIndirectJourney(from, to, departure, currentJourney, via, results);
