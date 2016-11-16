@@ -1,7 +1,12 @@
 package agents;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import data.ComposedJourney;
+import data.Journey;
 import data.JourneysList;
 import gui.TravellerGui;
 import jade.core.AID;
@@ -123,6 +128,37 @@ public class TravellerAgent extends GuiAgent {
 	/** compute a journey composed of several journey to meet the needs */
 	private void computeComposedJourney(final String from, final String to, final int departure,
 			final String preference) {
+		boolean found = false;
+		ArrayList<Journey> currentJourney = new ArrayList<Journey>();
+		List<String> via = new ArrayList<String>();
+		ArrayList<ComposedJourney> results = new ArrayList<ComposedJourney>();
+		println("On recherche un chemin de : " + from);
+		println("Pour aller vers : " + to);
+		println("A une heure : " + departure);
+		println("catalog : " + catalogs);
+		found = catalogs.findIndirectJourney(from, to, departure, currentJourney, via, results);
+		if(found) {
+			/*ComposedJourney composed_journey = null;
+			for(int i = 0;i < results.size();i++){
+				composed_journey = results.get(i);
+				
+			}*/
+			switch(preference){
+				case "cost": Collections.sort(results, (j1, j2)->(int)(j1.getCost() - j2.getCost()));
+				break;
+				case "confort": Collections.sort(results, (j1, j2)->(int)(j2.getCost() - j1.getCost()));
+				break;
+				case "co2": Collections.sort(results, (j1, j2)->(int)(j1.getCost() - j2.getCost()));
+				break;
+				case "duration": Collections.sort(results, (j1, j2)->(int)(j1.getCost() - j2.getCost()));
+				break;
+			}
+			ComposedJourney best = results.get(0);
+			println("best way : " + best);
+		}
+		else {
+			println("Pas de chemin trouvé");
+		}
 	}
 
 	/** get event from the GUI */

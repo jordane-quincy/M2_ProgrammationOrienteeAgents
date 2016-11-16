@@ -132,7 +132,10 @@ public class TravellerAgent extends GuiAgent {
 		ArrayList<Journey> currentJourney = new ArrayList<Journey>();
 		List<String> via = new ArrayList<String>();
 		ArrayList<ComposedJourney> results = new ArrayList<ComposedJourney>();
-		
+		println("On recherche un chemin de : " + from);
+		println("Pour aller vers : " + to);
+		println("A une heure : " + departure);
+		println("catalog : " + catalogs);
 		found = catalogs.findIndirectJourney(from, to, departure, currentJourney, via, results);
 		if(found) {
 			/*ComposedJourney composed_journey = null;
@@ -151,7 +154,10 @@ public class TravellerAgent extends GuiAgent {
 				break;
 			}
 			ComposedJourney best = results.get(0);
-			System.out.println(best);
+			println("best way : " + best);
+		}
+		else {
+			println("Pas de chemin trouvé");
 		}
 	}
 
