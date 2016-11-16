@@ -68,7 +68,7 @@ public class AgenceGui extends JFrame {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int screenWidth = (int) screenSize.getWidth();
 		int width = this.getWidth();
-		int xx = (noAgenceGui * width) % screenWidth - this.getWidth();
+		int xx = (noAgenceGui * width - this.getWidth()) % screenWidth;
 		int yy = ((noAgenceGui * width) / screenWidth) * getHeight();
 		setLocation(xx, yy);
 		setTitle(myAgent.getLocalName());
