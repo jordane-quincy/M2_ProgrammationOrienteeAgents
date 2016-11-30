@@ -1,6 +1,8 @@
 package launch;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -15,6 +17,8 @@ public class LaunchSimu {
 
 	public static final Logger logger = Logger.getLogger("simu");
 
+	private static final List<String> fichiersAgence = Arrays.asList("car.csv","bus.csv","train.csv");
+	
 	/**
 	 * @param args
 	 */
@@ -39,9 +43,10 @@ public class LaunchSimu {
 		}
 		
 		//Création des Agences
-		for(int nbAgence = 1; nbAgence <= 4; nbAgence++){
-			int numFichier = (nbAgence % 2 == 0 ? 2 : 1);
-			sbAgents.append("vendeur"+nbAgence+":agents.AgenceAgent(catalog"+ numFichier +".csv)").append(";");
+		int nbAgence = 1;
+		for(String fichierAgence : fichiersAgence){
+			sbAgents.append("vendeur"+nbAgence+":agents.AgenceAgent("+fichierAgence+")").append(";");
+			nbAgence++;
 		}
 
 		jadeArgs[0] = "-gui";
