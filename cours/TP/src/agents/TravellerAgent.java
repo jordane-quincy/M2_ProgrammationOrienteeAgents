@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.stream.Stream;
 
 import data.ComposedJourney;
 import data.Journey;
@@ -132,8 +135,6 @@ public class TravellerAgent extends GuiAgent {
 		ArrayList<Journey> currentJourney = new ArrayList<Journey>();
 		List<String> via = new ArrayList<String>();
 		ArrayList<ComposedJourney> results = new ArrayList<ComposedJourney>();
-		List<Double> cost_list_;
-		List<Double> duration_list_;
 		
 		println("On recherche un chemin de : " + from);
 		println("Pour aller vers : " + to);
@@ -146,6 +147,8 @@ public class TravellerAgent extends GuiAgent {
 				composed_journey = results.get(i);
 				
 			}*/
+			Stream<ComposedJourney> strCJ1 = results.stream();
+			Stream<ComposedJourney> strCJ2 = results.stream();
 			switch(preference){
 				case "cost": Collections.sort(results, (j1, j2)->(int)(j1.getCost() - j2.getCost()));
 				break;
@@ -156,7 +159,12 @@ public class TravellerAgent extends GuiAgent {
 				case "duration": Collections.sort(results, (j1, j2)->(int)(j1.getCost() - j2.getCost()));
 				break;
 				case "cost + duration": //Collections.sort(results, (j1, j2)->(int)(j1.getCost() - j2.getCost()));
-				
+					  //création d'un flux d'entiers à partir des durées des voyages composés et calcul de moyenne
+					  OptionalDouble moyCost = strCJ1.mapToInt(cj->(int)cj.getCost()).average();
+					  OptionalDouble moyDuration = strCJ2.mapToInt(cj->cj.getDuration()).average();
+					  double avgCost = moyCost.getAsDouble();
+					  double avgDuration = moyDuration.getAsDouble();
+					  //println("duree moyenne = " + moyDuration.getAsDouble());
 				break;
 			}
 			ComposedJourney best = results.get(0);
