@@ -125,7 +125,7 @@ public class TravellerGui extends JFrame {
 		});
 		p.add(sliderTime);
 
-		jListCriteria = new JComboBox<>(new String[] { "-", "cost", "co2", "confort", "duration" });
+		jListCriteria = new JComboBox<>(new String[] { "-", "cost", "co2", "confort", "duration", "cost + duration" });
 		jListCriteria.setSelectedIndex(0);
 		p.add(jListCriteria);
 
@@ -151,7 +151,7 @@ public class TravellerGui extends JFrame {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int screenWidth = (int) screenSize.getWidth();
 		int width = this.getWidth();
-		int xx = (noTravellerGui * width - this.getWidth()) % screenWidth;
+		int xx = (noTravellerGui * width) % screenWidth;
 		int yy = ((noTravellerGui * width) / screenWidth) * getHeight();
 		setLocation(xx, yy);
 		setTitle(myAgent.getLocalName());

@@ -152,6 +152,8 @@ public class TravellerAgent extends GuiAgent {
 				break;
 				case "duration": Collections.sort(results, (j1, j2)->(int)(j1.getCost() - j2.getCost()));
 				break;
+				case "cost + duration": Collections.sort(results, (j1, j2)->(int)(j1.getCost() - j2.getCost()));
+				break;
 			}
 			ComposedJourney best = results.get(0);
 			println("best way : " + best);
