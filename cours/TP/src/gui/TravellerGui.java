@@ -99,12 +99,12 @@ public class TravellerGui extends JFrame {
 			}
 		});
 
-		jListFrom = new JComboBox<>(new String[] { "-", "dep", "pt1", "pt2", "pt3", "arr" });
+		jListFrom = new JComboBox<>(new String[] { "-", "a", "b", "c", "d", "e", "f" });
 		jListFrom.setSelectedIndex(1);
 		p.add(jListFrom);
 
-		jListTo = new JComboBox<>(new String[] { "-", "dep", "pt1", "pt2", "pt3", "arr" });
-		jListTo.setSelectedIndex(2);
+		jListTo = new JComboBox<>(new String[] { "-", "a", "b", "c", "d", "e", "f" });
+		jListTo.setSelectedIndex(6);
 		p.add(jListTo);
 
 		sliderTime = new JSlider();
