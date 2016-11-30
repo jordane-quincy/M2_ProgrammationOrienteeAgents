@@ -100,11 +100,11 @@ public class TravellerGui extends JFrame {
 		});
 
 		jListFrom = new JComboBox<>(new String[] { "-", "dep", "pt1", "pt2", "pt3", "arr" });
-		jListFrom.setSelectedIndex(0);
+		jListFrom.setSelectedIndex(1);
 		p.add(jListFrom);
 
 		jListTo = new JComboBox<>(new String[] { "-", "dep", "pt1", "pt2", "pt3", "arr" });
-		jListTo.setSelectedIndex(0);
+		jListTo.setSelectedIndex(2);
 		p.add(jListTo);
 
 		sliderTime = new JSlider();
@@ -126,7 +126,7 @@ public class TravellerGui extends JFrame {
 		p.add(sliderTime);
 
 		jListCriteria = new JComboBox<>(new String[] { "-", "cost", "co2", "confort", "duration", "cost + duration" });
-		jListCriteria.setSelectedIndex(0);
+		jListCriteria.setSelectedIndex(5);
 		p.add(jListCriteria);
 
 		p.add(addButton);
