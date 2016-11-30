@@ -125,7 +125,7 @@ public class TravellerGui extends JFrame {
 		});
 		p.add(sliderTime);
 
-		jListCriteria = new JComboBox<>(new String[] { "-", "cost", "co2", "confort", "duration" });
+		jListCriteria = new JComboBox<>(new String[] { "-", "cost", "co2", "confort", "duration", "cost + duration" });
 		jListCriteria.setSelectedIndex(0);
 		p.add(jListCriteria);
 
