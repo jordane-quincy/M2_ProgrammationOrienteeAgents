@@ -1,0 +1,12 @@
+Run Configurations...
+Clic droit sur Java Application -> New
+Name est obligatoire mais arbitraire
+	Onglet 1 :
+Project :
+TP
+Main class :
+jade.Boot
+
+	Onglet 2 :
+Program arguments :
+-gui -services jade.core.event.NotificationService;jade.core.messaging.TopicManagementService client1:agents.TravellerAgent;vendeur1:agents.AgenceAgent(car.csv);vendeur2:agents.AgenceAgent(bus.csv);vendeur3:agents.AgenceAgent(train.csv);alert1:agents.AlertAgent
