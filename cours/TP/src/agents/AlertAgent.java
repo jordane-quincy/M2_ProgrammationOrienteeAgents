@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 import data.ComposedJourney;
 import data.Journey;
 import data.JourneysList;
+import gui.AlertAgentGui;
 import gui.TravellerGui;
 import jade.core.AID;
 import jade.core.behaviours.OneShotBehaviour;
@@ -26,7 +27,7 @@ import jade.lang.acl.ACLMessage;
  * @author Emmanuel ADAM
  */
 @SuppressWarnings("serial")
-public class AgentAlert extends GuiAgent {
+public class AlertAgent extends GuiAgent {
 	/** code to quit the agent from gui */
 	public static final int QUIT = 0;
 	/** code to search a travel from gui */
@@ -45,13 +46,13 @@ public class AgentAlert extends GuiAgent {
 	protected JourneysList catalogs;
 
 	/** gui */
-	private TravellerGui window;
+	private AlertAgentGui window;
 
 	/** Initialisation de l'agent */
 	@Override
 	protected void setup() {
-		this.window = new TravellerGui(this);
-		window.setColor(Color.cyan);
+		this.window = new AlertAgentGui(this);
+		window.setColor(Color.orange);
 		window.println("Hello! AgentAcheteurCN " + this.getLocalName() + " est pret. ");
 		window.display();
 	}
@@ -66,7 +67,7 @@ public class AgentAlert extends GuiAgent {
 	/**
 	 * @return agent gui
 	 */
-	public TravellerGui getWindow() {
+	public AlertAgentGui getWindow() {
 		return window;
 	}
 
@@ -179,10 +180,10 @@ public class AgentAlert extends GuiAgent {
 	/** get event from the GUI */
 	@Override
 	protected void onGuiEvent(final GuiEvent eventFromGui) {
-		if (eventFromGui.getType() == AgentAlert.QUIT) {
+		if (eventFromGui.getType() == AlertAgent.QUIT) {
 			doDelete();
 		}
-		if (eventFromGui.getType() == AgentAlert.SEARCH_TRAVEL) {
+		if (eventFromGui.getType() == AlertAgent.SEARCH_TRAVEL) {
 			buyJourney((String) eventFromGui.getParameter(0), (String) eventFromGui.getParameter(1),
 					(Integer) eventFromGui.getParameter(2), (String) eventFromGui.getParameter(3));
 		}

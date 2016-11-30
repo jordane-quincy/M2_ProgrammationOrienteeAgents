@@ -18,6 +18,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTextArea;
 
+import agents.AlertAgent;
 import agents.TravellerAgent;
 import jade.gui.GuiEvent;
 
@@ -27,7 +28,7 @@ import jade.gui.GuiEvent;
  * @author modif. Emmanuel Adam - LAMIH
  */
 @SuppressWarnings("serial")
-public class AlerteAgentGui extends JFrame {
+public class AlertAgentGui extends JFrame {
 
 	private static int nbTravellerGui = 0;
 	private int noTravellerGui;
@@ -38,24 +39,23 @@ public class AlerteAgentGui extends JFrame {
 	/** window color */
 	Color color;
 
-	private TravellerAgent myAgent;
-	private JLabel lblPrice;
+	private AlertAgent myAgent;
+	//private JLabel lblPrice;
 	private JComboBox<String> jListFrom;
 	private JComboBox<String> jListTo;
 	private JComboBox<String> jListCriteria;
-	private JSlider sliderTime;
+	//private JSlider sliderTime;
 
 	private String departure;
 	private String arrival;
-	private int time;
 	private int nbElements;
 
-	public AlerteAgentGui(TravellerAgent a) {
+	public AlertAgentGui(AlertAgent agentAlert) {
 		this.setBounds(0, 300, 600, 400);
 		noTravellerGui = ++nbTravellerGui;
 
-		myAgent = a;
-		if (a != null)
+		myAgent = agentAlert;
+		if (agentAlert != null)
 			setTitle(myAgent.getLocalName());
 
 		jTextArea = new JTextArea();
@@ -71,8 +71,8 @@ public class AlerteAgentGui extends JFrame {
 		p.add(new JLabel("From:"));
 		p.add(new JLabel("To:"));
 
-		lblPrice = new JLabel("Departure: 9:30");
-		p.add(lblPrice);
+		//lblPrice = new JLabel("Departure: 9:30");
+		//p.add(lblPrice);
 
 		p.add(new JLabel("Criteria"));
 
@@ -83,18 +83,16 @@ public class AlerteAgentGui extends JFrame {
 			try {
 				departure = (String) jListFrom.getSelectedItem();
 				arrival = (String) jListTo.getSelectedItem();
-				time = sliderTime.getValue();
 				nbElements = 1;
 				// SEND AN GUI EVENT TO THE AGENT !!!
 				GuiEvent guiEv = new GuiEvent(this, TravellerAgent.SEARCH_TRAVEL);
 				guiEv.addParameter(departure);
 				guiEv.addParameter(arrival);
-				guiEv.addParameter(time);
 				guiEv.addParameter(jListCriteria.getSelectedItem());
 				myAgent.postGuiEvent(guiEv);
 				// END SEND AN GUI EVENT TO THE AGENT !!!
 			} catch (Exception e) {
-				JOptionPane.showMessageDialog(AlerteAgentGui.this, "Invalid values. " + e.getMessage(), "Error",
+				JOptionPane.showMessageDialog(AlertAgentGui.this, "Invalid values. " + e.getMessage(), "Error",
 						JOptionPane.ERROR_MESSAGE);
 			}
 		});
@@ -107,7 +105,7 @@ public class AlerteAgentGui extends JFrame {
 		jListTo.setSelectedIndex(6);
 		p.add(jListTo);
 
-		sliderTime = new JSlider();
+		/*sliderTime = new JSlider();
 		sliderTime.setPreferredSize(new Dimension(100, 10));
 		sliderTime.setMinimum(200);
 		sliderTime.setMaximum(2300);
@@ -123,10 +121,10 @@ public class AlerteAgentGui extends JFrame {
 			lblPrice.setText("Departure: " + hh + ":" + smm);
 			lblPrice.repaint();
 		});
-		p.add(sliderTime);
+		p.add(sliderTime);*/
 
-		jListCriteria = new JComboBox<>(new String[] { "-", "cost", "co2", "confort", "duration", "cost + duration" });
-		jListCriteria.setSelectedIndex(5);
+		jListCriteria = new JComboBox<>(new String[] { "blocage" });
+		jListCriteria.setSelectedIndex(0);
 		p.add(jListCriteria);
 
 		p.add(addButton);
@@ -146,7 +144,7 @@ public class AlerteAgentGui extends JFrame {
 		setResizable(true);
 	}
 
-	public void display() {System.out.println("TRAVELLER");
+	public void display() {System.out.println("ALERT AGENT");
 		pack();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int screenWidth = (int) screenSize.getWidth();
@@ -154,7 +152,7 @@ public class AlerteAgentGui extends JFrame {
 		System.out.println(noTravellerGui);
 		int xx = (noTravellerGui * width - this.getWidth()) % screenWidth;
 		int yy = ((noTravellerGui * width) / screenWidth) * getHeight();
-		setLocation(xx, yy + 200);
+		setLocation(xx, yy + 2*this.getHeight());
 		setTitle(myAgent.getLocalName());
 		setVisible(true);
 	}
@@ -184,13 +182,6 @@ public class AlerteAgentGui extends JFrame {
 	}
 
 	/**
-	 * @return the price
-	 */
-	public int getPrice() {
-		return time;
-	}
-
-	/**
 	 * @return the nbElements
 	 */
 	public int getNbElements() {
@@ -198,7 +189,7 @@ public class AlerteAgentGui extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		AlerteAgentGui test = new AlerteAgentGui(null);
+		AlertAgentGui test = new AlertAgentGui(null);
 		test.setVisible(true);
 	}
 

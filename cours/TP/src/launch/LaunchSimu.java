@@ -48,6 +48,11 @@ public class LaunchSimu {
 			sbAgents.append("vendeur"+nbAgence+":agents.AgenceAgent("+fichierAgence+")").append(";");
 			nbAgence++;
 		}
+		//Création de l'Agent d'Alertes
+		int nb_alert_agent = 1;
+		for(int i = 0;i < nb_alert_agent;i++){
+			sbAgents.append("alert"+i+":agents.AlertAgent").append(";");
+		}
 
 		jadeArgs[0] = "-gui";
 		jadeArgs[1] = sbAgents.toString();
