@@ -50,7 +50,7 @@ public class TravellerAgent extends GuiAgent {
 		this.window = new TravellerGui(this);
 		window.setColor(Color.cyan);
 		window.println("Hello! AgentAcheteurCN " + this.getLocalName() + " est pret. ");
-		window.setVisible(true);
+		window.display();
 	}
 
 	// 'Nettoyage' de l'agent
@@ -132,6 +132,9 @@ public class TravellerAgent extends GuiAgent {
 		ArrayList<Journey> currentJourney = new ArrayList<Journey>();
 		List<String> via = new ArrayList<String>();
 		ArrayList<ComposedJourney> results = new ArrayList<ComposedJourney>();
+		List<Double> cost_list_;
+		List<Double> duration_list_;
+		
 		println("On recherche un chemin de : " + from);
 		println("Pour aller vers : " + to);
 		println("A une heure : " + departure);
@@ -152,7 +155,8 @@ public class TravellerAgent extends GuiAgent {
 				break;
 				case "duration": Collections.sort(results, (j1, j2)->(int)(j1.getCost() - j2.getCost()));
 				break;
-				case "cost + duration": Collections.sort(results, (j1, j2)->(int)(j1.getCost() - j2.getCost()));
+				case "cost + duration": //Collections.sort(results, (j1, j2)->(int)(j1.getCost() - j2.getCost()));
+				
 				break;
 			}
 			ComposedJourney best = results.get(0);

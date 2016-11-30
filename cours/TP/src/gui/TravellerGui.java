@@ -51,7 +51,7 @@ public class TravellerGui extends JFrame {
 	private int nbElements;
 
 	public TravellerGui(TravellerAgent a) {
-		this.setBounds(10, 200, 600, 400);
+		this.setBounds(0, 300, 600, 400);
 		noTravellerGui = ++nbTravellerGui;
 
 		myAgent = a;
@@ -146,14 +146,15 @@ public class TravellerGui extends JFrame {
 		setResizable(true);
 	}
 
-	public void display() {
+	public void display() {System.out.println("TRAVELLER");
 		pack();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int screenWidth = (int) screenSize.getWidth();
 		int width = this.getWidth();
-		int xx = (noTravellerGui * width) % screenWidth;
+		System.out.println(noTravellerGui);
+		int xx = (noTravellerGui * width - this.getWidth()) % screenWidth;
 		int yy = ((noTravellerGui * width) / screenWidth) * getHeight();
-		setLocation(xx, yy);
+		setLocation(xx, yy + 200);
 		setTitle(myAgent.getLocalName());
 		setVisible(true);
 	}
