@@ -33,7 +33,11 @@ public class LaunchSimu {
 		String[] jadeArgs = new String[2];
 		StringBuffer sbAgents = new StringBuffer();
 
-		sbAgents.append("client1:agents.TravellerAgent").append(";");
+		//Création des Traveller
+		for(int nbTraveller = 1; nbTraveller <= 2; nbTraveller++){
+			sbAgents.append("client"+nbTraveller+":agents.TravellerAgent").append(";");
+		}
+		
 		sbAgents.append("vendeur1:agents.AgenceAgent(catalog1.csv)").append(";");
 		sbAgents.append("vendeur2:agents.AgenceAgent(catalog2.csv)").append(";");
 		jadeArgs[0] = "-gui";

@@ -151,7 +151,7 @@ public class TravellerGui extends JFrame {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int screenWidth = (int) screenSize.getWidth();
 		int width = this.getWidth();
-		int xx = (noTravellerGui * width) % screenWidth;
+		int xx = (noTravellerGui * width - this.getWidth()) % screenWidth;
 		int yy = ((noTravellerGui * width) / screenWidth) * getHeight();
 		setLocation(xx, yy);
 		setTitle(myAgent.getLocalName());
