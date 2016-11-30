@@ -38,8 +38,12 @@ public class LaunchSimu {
 			sbAgents.append("client"+nbTraveller+":agents.TravellerAgent").append(";");
 		}
 		
-		sbAgents.append("vendeur1:agents.AgenceAgent(catalog1.csv)").append(";");
-		sbAgents.append("vendeur2:agents.AgenceAgent(catalog2.csv)").append(";");
+		//Création des Agences
+		for(int nbAgence = 1; nbAgence <= 4; nbAgence++){
+			int numFichier = (nbAgence % 2 == 0 ? 2 : 1);
+			sbAgents.append("vendeur"+nbAgence+":agents.AgenceAgent(catalog"+ numFichier +".csv)").append(";");
+		}
+
 		jadeArgs[0] = "-gui";
 		jadeArgs[1] = sbAgents.toString();
 
