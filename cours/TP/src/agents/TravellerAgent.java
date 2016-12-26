@@ -153,11 +153,11 @@ public class TravellerAgent extends GuiAgent {
 			switch(preference){
 				case "cost": Collections.sort(results, (j1, j2)->(int)(j1.getCost() - j2.getCost()));
 				break;
-				case "confort": Collections.sort(results, (j1, j2)->(int)(j2.getCost() - j1.getCost()));
+				case "confort": Collections.sort(results, (j1, j2)->(int)(j2.getConfort() - j1.getConfort()));
 				break;
-				case "co2": Collections.sort(results, (j1, j2)->(int)(j1.getCost() - j2.getCost()));
+				case "co2": Collections.sort(results, (j1, j2)->(int)(j1.getCo2() - j2.getCo2()));
 				break;
-				case "duration": Collections.sort(results, (j1, j2)->(int)(j1.getCost() - j2.getCost()));
+				case "duration": Collections.sort(results, (j1, j2)->(int)(j1.getDuration() - j2.getDuration()));
 				break;
 				case "cost + duration": //Collections.sort(results, (j1, j2)->(int)(j1.getCost() - j2.getCost()));
 					  //création d'un flux d'entiers à partir des durées des voyages composés et calcul de moyenne
