@@ -70,6 +70,7 @@ public class AgenceAgent extends GuiAgent {
 		addBehaviour(new AchieveREResponder(this, mt) {
 			@Override
 			protected ACLMessage handleRequest(ACLMessage request) {
+				window.println("Réception d'un message de "+ request.getSender().getLocalName() +" : "+ request.getContent());
 				ACLMessage result = request.createReply();
 				result.setPerformative(ACLMessage.AGREE);
 				try {

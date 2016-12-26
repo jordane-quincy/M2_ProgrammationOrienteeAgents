@@ -85,7 +85,7 @@ public class AlertAgentGui extends JFrame {
 				arrival = (String) jListTo.getSelectedItem();
 				nbElements = 1;
 				// SEND AN GUI EVENT TO THE AGENT !!!
-				GuiEvent guiEv = new GuiEvent(this, TravellerAgent.SEARCH_TRAVEL);
+				GuiEvent guiEv = new GuiEvent(this, AlertAgent.SEND_NEWS);
 				guiEv.addParameter(departure);
 				guiEv.addParameter(arrival);
 				guiEv.addParameter(jListCriteria.getSelectedItem());

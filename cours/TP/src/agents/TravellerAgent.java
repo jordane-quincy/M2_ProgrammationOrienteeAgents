@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.OptionalDouble;
-import java.util.OptionalInt;
 import java.util.stream.Stream;
 
 import data.ComposedJourney;
@@ -13,12 +12,16 @@ import data.Journey;
 import data.JourneysList;
 import gui.TravellerGui;
 import jade.core.AID;
+import jade.core.ServiceException;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.SequentialBehaviour;
 import jade.core.behaviours.WakerBehaviour;
+import jade.core.messaging.TopicManagementHelper;
 import jade.gui.GuiAgent;
 import jade.gui.GuiEvent;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
+import jade.proto.AchieveREResponder;
 
 /**
  * Journey searcher
@@ -46,20 +49,29 @@ public class TravellerAgent extends GuiAgent {
 
 	/** gui */
 	private TravellerGui window;
+	
+	/** le topic des alertes traffic */
+	private AID topic;
 
 	/** Initialisation de l'agent */
 	@Override
 	protected void setup() {
 		this.window = new TravellerGui(this);
 		window.setColor(Color.cyan);
-		window.println("Hello! AgentAcheteurCN " + this.getLocalName() + " est pret. ");
+		println("Hello! AgentAcheteurCN " + this.getLocalName() + " est pret. ");
 		window.display();
+		
+		AgentToolsEA.register(this, "traveller agent", "traveller");
+
+		// attendre une info traffic
+		followTrafficNews();
+		
 	}
 
 	// 'Nettoyage' de l'agent
 	@Override
 	protected void takeDown() {
-		window.println("Je quitte la plateforme. ");
+		println("Je quitte la plateforme. ");
 	}
 
 	///// SETTERS AND GETTERS
@@ -87,7 +99,7 @@ public class TravellerAgent extends GuiAgent {
 	private void buyJourney(final String from, final String to, final int departure, final String preference) {
 
 		sortMode = preference;
-		window.println("recherche de voyage de " + from + " vers " + to + " Ã  partir de " + departure);
+		println("recherche de voyage de " + from + " vers " + to + " à partir de " + departure);
 
 		final SequentialBehaviour seqB = new SequentialBehaviour(this);
 		seqB.addSubBehaviour(new OneShotBehaviour(this) {
@@ -232,6 +244,55 @@ public class TravellerAgent extends GuiAgent {
 	/** set the list of journeys */
 	public void setCatalogs(final JourneysList catalogs) {
 		this.catalogs = catalogs;
+	}
+	
+	private void createTopicTrafficNews() {
+	    // Définition du topic
+	    TopicManagementHelper topicHelper = null;
+	    try {
+	      topicHelper = (TopicManagementHelper) getHelper(TopicManagementHelper.SERVICE_NAME);
+	      topic = topicHelper.createTopic(AlertAgent.TOPIC_TRAFFIC);
+	      topicHelper.register(topic);
+	    } catch (ServiceException e) {e.printStackTrace(); }
+	    println("Création du topic traffic ok");
+	}
+	
+	/**
+	 * Ask a behaviour that wait for a traffic news.
+	 */
+	private void followTrafficNews() {
+		// creation du topic
+		createTopicTrafficNews();
+
+		// ajout du comportement pour traiter les messages
+		MessageTemplate mt = MessageTemplate.MatchConversationId(AlertAgent.TOPIC_TRAFFIC);
+		addBehaviour(new AchieveREResponder(this, mt) {
+			@Override
+			protected ACLMessage handleRequest(ACLMessage request) {
+				println("Réception d'un message de "+ request.getSender().getLocalName() +" : "+ request.getContent());
+				ACLMessage result = request.createReply();
+				result.setPerformative(ACLMessage.AGREE);
+				
+				String receivedNews = request.getContent();
+				if(receivedNews != null && receivedNews.contains(" ")){
+					// Les champs de Mr Adam sont séparés par des espaces. Exemple : "blocage train pointA pointB"
+					String[] newsPart = receivedNews.split(" ");
+					String type = newsPart[0];
+					String means = newsPart[1];
+					String from = newsPart[2];
+					String to = newsPart[3];
+	
+					//FIXME: ici retirer les trajets ayant ces caracteristiques
+					
+					//FIXME: si au moins un trajet supprimé du catalogue, alors recalculer un nouveau trajet
+
+				}else{
+					println("Le message d'info traffic reçu n'est pas valide.");
+				}
+				
+				return result;
+			}
+		});
 	}
 
 }

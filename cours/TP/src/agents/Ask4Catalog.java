@@ -1,5 +1,6 @@
 package agents;
 
+import java.util.Arrays;
 import java.util.Vector;
 
 import data.JourneysList;
@@ -33,7 +34,7 @@ public class Ask4Catalog extends AchieveREInitiator {
 		super(traveller, msg);
 		agent = (TravellerAgent) traveller;
 		final AID[] vendeurs = agent.getVendeurs();
-		agent.println("Ask4Catalog vendeurs = " + vendeurs);
+		agent.println("Ask4Catalog vendeurs = " + Arrays.asList(vendeurs));
 		for (AID v : vendeurs) {
 			msg.addReceiver(v);
 		}
