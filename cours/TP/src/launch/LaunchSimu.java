@@ -54,7 +54,7 @@ public class LaunchSimu {
 			sbAgents.append("alert"+i+":agents.AlertAgent").append(";");
 		}
 
-		jadeArgs[0] = "-gui";
+		jadeArgs[0] = "-gui -services jade.core.event.NotificationService;jade.core.messaging.TopicManagementService";
 		jadeArgs[1] = sbAgents.toString();
 
 		jade.Boot.main(jadeArgs);
