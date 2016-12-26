@@ -77,7 +77,7 @@ public class AgenceAgent extends GuiAgent {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				window.println("j'envoie mon catalogue Ã  l'agent " + request.getSender().getLocalName());
+				window.println("j'envoie mon catalogue à l'agent " + request.getSender().getLocalName());
 				return result;
 			}
 		});
@@ -137,10 +137,13 @@ public class AgenceAgent extends GuiAgent {
 					String means = line[2].trim().toUpperCase();
 					int heureDep = Integer.parseInt(line[3].trim());
 					int duree = Integer.parseInt(line[4].trim());
+					double cost = Double.parseDouble(line[5].trim());
+					int co2 = Integer.parseInt(line[6].trim());
+					int confort = Integer.parseInt(line[7].trim());
 					
 					int nbRepetition = (line.length == 10 ? Integer.parseInt(line[8].trim()) : 0);
 					int frequence = (line.length == 10 ? Integer.parseInt(line[9].trim()) : 0);
-					Journey j = new Journey(from, to, means, heureDep, duree);
+					Journey j =  new Journey(from, to, means, heureDep, duree, cost, co2, confort); // new Journey(from, to, means, heureDep, duree);
 					catalog.addJourney(j);
 					if (frequence > 0) {
 						repeatJourney(heureDep, nbRepetition, frequence, j);
