@@ -21,3 +21,4 @@ RemoteSystemsTempFiles
 APDescription.txt
 MTPs-Main-Container.txt
 simuAgences.xml
+/simuAgences.xml.lck

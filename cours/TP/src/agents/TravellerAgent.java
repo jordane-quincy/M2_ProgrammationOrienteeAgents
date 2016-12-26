@@ -143,11 +143,6 @@ public class TravellerAgent extends GuiAgent {
 		//120 = durée qu'on veut bien attendre (ou décallage)		
 		found = catalogs.findIndirectJourney(from.trim().toUpperCase(), to.trim().toUpperCase(), departure, 120, currentJourney, via, results);
 		if(found) {
-			/*ComposedJourney composed_journey = null;
-			for(int i = 0;i < results.size();i++){
-				composed_journey = results.get(i);
-				
-			}*/
 			Stream<ComposedJourney> strCJ1 = results.stream();
 			Stream<ComposedJourney> strCJ2 = results.stream();
 			switch(preference){
@@ -160,12 +155,23 @@ public class TravellerAgent extends GuiAgent {
 				case "duration": Collections.sort(results, (j1, j2)->(int)(j1.getDuration() - j2.getDuration()));
 				break;
 				case "cost + duration": //Collections.sort(results, (j1, j2)->(int)(j1.getCost() - j2.getCost()));
-					  //création d'un flux d'entiers à partir des durées des voyages composés et calcul de moyenne
-					  OptionalDouble moyCost = strCJ1.mapToInt(cj->(int)cj.getCost()).average();
-					  OptionalDouble moyDuration = strCJ2.mapToInt(cj->cj.getDuration()).average();
-					  double avgCost = moyCost.getAsDouble();
-					  double avgDuration = moyDuration.getAsDouble();
-					  //println("duree moyenne = " + moyDuration.getAsDouble());
+					//création d'un flux d'entiers à partir des durées des voyages composés et calcul de moyenne
+					OptionalDouble moyCost = strCJ1.mapToInt(cj->(int)cj.getCost()).average();
+					OptionalDouble moyDuration = strCJ2.mapToInt(cj->cj.getDuration()).average();
+					double avgCost = moyCost.getAsDouble();
+					double avgDuration = moyDuration.getAsDouble();
+					results.forEach(cj -> cj.setNormDuration( (cj.getDuration() - avgDuration)/(Math.sqrt( Math.pow(avgDuration * avgDuration - avgDuration, 2) ))));
+					results.forEach(cj -> cj.setNormCost( (cj.getCost() - avgCost)/(Math.sqrt( Math.pow(avgCost * avgCost - avgCost, 2) ))));
+					Collections.sort(results, (j1, j2)->(int)((j1.getNormDuration()*0.5 + j1.getNormCost()*0.5) - (j2.getNormDuration()*0.5 + j2.getNormCost()*0.5)));
+				break;
+				case "duration + confort":
+					OptionalDouble moyConfort = strCJ1.mapToInt(cj->(int)cj.getConfort()).average();
+					OptionalDouble moyDuration2 = strCJ2.mapToInt(cj->cj.getDuration()).average();
+					double avgConfort = moyConfort.getAsDouble();
+					double avgDuration2 = moyDuration2.getAsDouble();
+					results.forEach(cj -> cj.setNormDuration( (cj.getDuration() - avgDuration2)/(Math.sqrt( Math.pow(avgDuration2 * avgDuration2 - avgDuration2, 2) ))));
+					results.forEach(cj -> cj.setNormConfort( (cj.getConfort() - avgConfort)/(Math.sqrt( Math.pow(avgConfort * avgConfort - avgConfort, 2) ))));
+					Collections.sort(results, (j1, j2)->(int)((j1.getNormDuration()*0.5 + j1.getNormConfort()*0.5) - (j2.getNormDuration()*0.5 + j2.getNormConfort()*0.5)));
 				break;
 			}
 			ComposedJourney best = results.get(0);
