@@ -3,6 +3,7 @@ package agents;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.OptionalDouble;
 import java.util.stream.Stream;
@@ -283,8 +284,26 @@ public class TravellerAgent extends GuiAgent {
 					String to = newsPart[3];
 	
 					//FIXME: ici retirer les trajets ayant ces caracteristiques
+					if(catalogs != null){
+						Hashtable<String,ArrayList<Journey>> hashTable = catalogs.getCatalog();
+						//tout les journey au départ de from
+						ArrayList<Journey> lstJourney = hashTable.get(from);
+						if(lstJourney != null){
+							for(Journey j : lstJourney){
+								//si la destination et le mode de transport sont ceux recherchés
+								if(j.getStop().equalsIgnoreCase(to) &&
+									j.getMeans().equalsIgnoreCase(means)
+								){
+									//FIXME: ici faire le remove du journey dans le catalogue + recalculer un nouveau trajet
+								}
+							}
+						}else{
+							println("Le catalogue n'a pas été mis à jour car il ne contient pas de journey à partir de : "+ from);
+						}							
+					}else{
+						println("Le catalogue n'a pas été mis à jour car il n'existe pas.");
+					}
 					
-					//FIXME: si au moins un trajet supprimé du catalogue, alors recalculer un nouveau trajet
 
 				}else{
 					println("Le message d'info traffic reçu n'est pas valide.");
