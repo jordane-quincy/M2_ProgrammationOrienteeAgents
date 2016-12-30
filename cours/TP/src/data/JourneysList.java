@@ -158,8 +158,4 @@ public class JourneysList implements Serializable {
 		}
 		return hasRemovedJourney;
 	}
-
-	public Hashtable<String, ArrayList<Journey>> getCatalog() {
-		return this.catalog;
-	}
 }
