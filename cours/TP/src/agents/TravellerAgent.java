@@ -39,6 +39,11 @@ public class TravellerAgent extends GuiAgent {
 	/** liste des vendeurs */
 	protected AID[] vendeurs;
 
+	/** Informations de la derniere recherche de trajet effectuée*/
+	private String from;
+	private String to;
+	private int departure;
+	
 	/**
 	 * preference between journeys -, cost, co2, duration or confort ("-" = cost
 	 * by defaul)}
@@ -98,7 +103,10 @@ public class TravellerAgent extends GuiAgent {
 	 *            choose the best (in cost, co2, confort, ...)
 	 */
 	private void buyJourney(final String from, final String to, final int departure, final String preference) {
-
+		this.from=from;
+		this.to=to;
+		this.departure=departure;
+		
 		sortMode = preference;
 		println("recherche de voyage de " + from + " vers " + to + " à partir de " + departure);
 
@@ -279,16 +287,23 @@ public class TravellerAgent extends GuiAgent {
 					// Les champs de Mr Adam sont séparés par des espaces. Exemple : "blocage train pointA pointB"
 					// "blocage from c to f"
 					String[] newsPart = receivedNews.split(" ");
-					String type = newsPart[0];
-					String means = newsPart[1];
-					String from = newsPart[2];
-					String to = newsPart[4];
+					String newsType = newsPart[0];
+					String newsMeans = newsPart[1];
+					String newsFrom = newsPart[2];
+					String newsTo = newsPart[4];
 	
 					//FIXME: ici retirer les trajets ayant ces caracteristiques
 					if(catalogs != null){
 						//FIXME: ici faire le remove du journey dans le catalogue + recalculer un nouveau trajet
-						if(catalogs.removeJourney(from,to)){
-							println("Au moins un trajet supprimé. Recalcul d'un itinéraire.");
+						if(catalogs.removeJourney(newsFrom,newsTo)){
+							println("Au moins un trajet supprimé.");
+							
+							if(from != null && !from.isEmpty()){
+								println("Recalcul automatique d'un itinéraire.");
+								buyJourney(from, to, departure, sortMode);
+							}else{
+								println("Le traveller n'a pas encore fait de recherche. Recalcul automatique impossible.");
+							}
 						}
 					}else{
 						println("Le catalogue n'a pas été mis à jour car il n'existe pas.");
