@@ -3,7 +3,6 @@ package agents;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.OptionalDouble;
 import java.util.stream.Stream;
@@ -134,7 +133,7 @@ public class TravellerAgent extends GuiAgent {
 			protected void onWake() {
 
 				if (catalogs != null) {
-					println("here is my catalog : ");
+					println("Traveller catalog : ");
 					println(" -> " + catalogs);
 					println(preference);
 					println("*****************************************************");
@@ -284,17 +283,15 @@ public class TravellerAgent extends GuiAgent {
 				
 				String receivedNews = request.getContent();
 				if(receivedNews != null && receivedNews.contains(" ")){
-					// Les champs de Mr Adam sont séparés par des espaces. Exemple : "blocage train pointA pointB"
-					// "blocage from c to f"
+					// Les champs de Mr Adam sont séparés par des espaces. Format : "blocage train pointA pointB"
+					// Exemple réel : "blocage from c to f"
 					String[] newsPart = receivedNews.split(" ");
-					String newsType = newsPart[0];
-					String newsMeans = newsPart[1];
+					//String newsType = newsPart[0];
+					//String newsMeans = newsPart[1];
 					String newsFrom = newsPart[2];
 					String newsTo = newsPart[4];
 	
-					//FIXME: ici retirer les trajets ayant ces caracteristiques
 					if(catalogs != null){
-						//FIXME: ici faire le remove du journey dans le catalogue + recalculer un nouveau trajet
 						if(catalogs.removeJourney(newsFrom,newsTo)){
 							println("Au moins un trajet supprimé.");
 							
@@ -308,8 +305,6 @@ public class TravellerAgent extends GuiAgent {
 					}else{
 						println("Le catalogue n'a pas été mis à jour car il n'existe pas.");
 					}
-					
-
 				}else{
 					println("Le message d'info traffic reçu n'est pas valide.");
 				}
