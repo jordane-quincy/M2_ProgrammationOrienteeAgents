@@ -277,29 +277,19 @@ public class TravellerAgent extends GuiAgent {
 				String receivedNews = request.getContent();
 				if(receivedNews != null && receivedNews.contains(" ")){
 					// Les champs de Mr Adam sont séparés par des espaces. Exemple : "blocage train pointA pointB"
+					// "blocage from c to f"
 					String[] newsPart = receivedNews.split(" ");
 					String type = newsPart[0];
 					String means = newsPart[1];
 					String from = newsPart[2];
-					String to = newsPart[3];
+					String to = newsPart[4];
 	
 					//FIXME: ici retirer les trajets ayant ces caracteristiques
 					if(catalogs != null){
-						Hashtable<String,ArrayList<Journey>> hashTable = catalogs.getCatalog();
-						//tout les journey au départ de from
-						ArrayList<Journey> lstJourney = hashTable.get(from);
-						if(lstJourney != null){
-							for(Journey j : lstJourney){
-								//si la destination et le mode de transport sont ceux recherchés
-								if(j.getStop().equalsIgnoreCase(to) &&
-									j.getMeans().equalsIgnoreCase(means)
-								){
-									//FIXME: ici faire le remove du journey dans le catalogue + recalculer un nouveau trajet
-								}
-							}
-						}else{
-							println("Le catalogue n'a pas été mis à jour car il ne contient pas de journey à partir de : "+ from);
-						}							
+						//FIXME: ici faire le remove du journey dans le catalogue + recalculer un nouveau trajet
+						if(catalogs.removeJourney(from,to)){
+							println("Au moins un trajet supprimé. Recalcul d'un itinéraire.");
+						}
 					}else{
 						println("Le catalogue n'a pas été mis à jour car il n'existe pas.");
 					}
