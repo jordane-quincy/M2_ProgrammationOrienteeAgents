@@ -3,6 +3,7 @@ package agents;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.OptionalDouble;
 import java.util.stream.Stream;
@@ -38,11 +39,11 @@ public class TravellerAgent extends GuiAgent {
 	/** liste des vendeurs */
 	protected AID[] vendeurs;
 
-	/** Informations de la derniere recherche de trajet effectuée*/
+	/** Informations de la derniere recherche de trajet effectuée */
 	private String from;
 	private String to;
 	private int departure;
-	
+
 	/**
 	 * preference between journeys -, cost, co2, duration or confort ("-" = cost
 	 * by defaul)}
@@ -54,7 +55,7 @@ public class TravellerAgent extends GuiAgent {
 
 	/** gui */
 	private TravellerGui window;
-	
+
 	/** le topic des alertes traffic */
 	private AID topic;
 
@@ -65,12 +66,12 @@ public class TravellerAgent extends GuiAgent {
 		window.setColor(Color.cyan);
 		println("Hello! AgentAcheteurCN " + this.getLocalName() + " est pret. ");
 		window.display();
-		
+
 		AgentToolsEA.register(this, "traveller agent", "traveller");
 
 		// attendre une info traffic
 		followTrafficNews();
-		
+
 	}
 
 	// 'Nettoyage' de l'agent
@@ -102,10 +103,10 @@ public class TravellerAgent extends GuiAgent {
 	 *            choose the best (in cost, co2, confort, ...)
 	 */
 	private void buyJourney(final String from, final String to, final int departure, final String preference) {
-		this.from=from;
-		this.to=to;
-		this.departure=departure;
-		
+		this.from = from;
+		this.to = to;
+		this.departure = departure;
+
 		sortMode = preference;
 		println("recherche de voyage de " + from + " vers " + to + " à partir de " + departure);
 
@@ -155,49 +156,61 @@ public class TravellerAgent extends GuiAgent {
 		ArrayList<Journey> currentJourney = new ArrayList<Journey>();
 		List<String> via = new ArrayList<String>();
 		ArrayList<ComposedJourney> results = new ArrayList<ComposedJourney>();
-		
+
 		println("On recherche un chemin de : " + from);
 		println("Pour aller vers : " + to);
 		println("A une heure : " + departure);
 		println("catalog : " + catalogs);
-		//120 = durée qu'on veut bien attendre (ou décallage)		
-		found = catalogs.findIndirectJourney(from.trim().toUpperCase(), to.trim().toUpperCase(), departure, 120, currentJourney, via, results);
-		if(found) {
+		// 120 = durée qu'on veut bien attendre (ou décallage)
+		found = catalogs.findIndirectJourney(from.trim().toUpperCase(), to.trim().toUpperCase(), departure, 120,
+				currentJourney, via, results);
+		if (found) {
 			Stream<ComposedJourney> strCJ1 = results.stream();
 			Stream<ComposedJourney> strCJ2 = results.stream();
-			switch(preference){
-				case "cost": Collections.sort(results, (j1, j2)->(int)(j1.getCost() - j2.getCost()));
+			switch (preference) {
+			case "cost":
+				Collections.sort(results, (j1, j2) -> (int) (j1.getCost() - j2.getCost()));
 				break;
-				case "confort": Collections.sort(results, (j1, j2)->(int)(j2.getConfort() - j1.getConfort()));
+			case "confort":
+				Collections.sort(results, (j1, j2) -> (int) (j2.getConfort() - j1.getConfort()));
 				break;
-				case "co2": Collections.sort(results, (j1, j2)->(int)(j1.getCo2() - j2.getCo2()));
+			case "co2":
+				Collections.sort(results, (j1, j2) -> (int) (j1.getCo2() - j2.getCo2()));
 				break;
-				case "duration": Collections.sort(results, (j1, j2)->(int)(j1.getDuration() - j2.getDuration()));
+			case "duration":
+				Collections.sort(results, (j1, j2) -> (int) (j1.getDuration() - j2.getDuration()));
 				break;
-				case "cost + duration": //Collections.sort(results, (j1, j2)->(int)(j1.getCost() - j2.getCost()));
-					//création d'un flux d'entiers à partir des durées des voyages composés et calcul de moyenne
-					OptionalDouble moyCost = strCJ1.mapToInt(cj->(int)cj.getCost()).average();
-					OptionalDouble moyDuration = strCJ2.mapToInt(cj->cj.getDuration()).average();
-					double avgCost = moyCost.getAsDouble();
-					double avgDuration = moyDuration.getAsDouble();
-					results.forEach(cj -> cj.setNormDuration( (cj.getDuration() - avgDuration)/(Math.sqrt( Math.pow(avgDuration * avgDuration - avgDuration, 2) ))));
-					results.forEach(cj -> cj.setNormCost( (cj.getCost() - avgCost)/(Math.sqrt( Math.pow(avgCost * avgCost - avgCost, 2) ))));
-					Collections.sort(results, (j1, j2)->(int)((j1.getNormDuration()*0.5 + j1.getNormCost()*0.5) - (j2.getNormDuration()*0.5 + j2.getNormCost()*0.5)));
+			case "cost + duration": // Collections.sort(results, (j1,
+									// j2)->(int)(j1.getCost() - j2.getCost()));
+				// création d'un flux d'entiers à partir des durées des voyages
+				// composés et calcul de moyenne
+				OptionalDouble moyCost = strCJ1.mapToInt(cj -> (int) cj.getCost()).average();
+				OptionalDouble moyDuration = strCJ2.mapToInt(cj -> cj.getDuration()).average();
+				double avgCost = moyCost.getAsDouble();
+				double avgDuration = moyDuration.getAsDouble();
+				results.forEach(cj -> cj.setNormDuration((cj.getDuration() - avgDuration)
+						/ (Math.sqrt(Math.pow(avgDuration * avgDuration - avgDuration, 2)))));
+				results.forEach(cj -> cj
+						.setNormCost((cj.getCost() - avgCost) / (Math.sqrt(Math.pow(avgCost * avgCost - avgCost, 2)))));
+				Collections.sort(results, (j1, j2) -> (int) ((j1.getNormDuration() * 0.5 + j1.getNormCost() * 0.5)
+						- (j2.getNormDuration() * 0.5 + j2.getNormCost() * 0.5)));
 				break;
-				case "duration + confort":
-					OptionalDouble moyConfort = strCJ1.mapToInt(cj->(int)cj.getConfort()).average();
-					OptionalDouble moyDuration2 = strCJ2.mapToInt(cj->cj.getDuration()).average();
-					double avgConfort = moyConfort.getAsDouble();
-					double avgDuration2 = moyDuration2.getAsDouble();
-					results.forEach(cj -> cj.setNormDuration( (cj.getDuration() - avgDuration2)/(Math.sqrt( Math.pow(avgDuration2 * avgDuration2 - avgDuration2, 2) ))));
-					results.forEach(cj -> cj.setNormConfort( (cj.getConfort() - avgConfort)/(Math.sqrt( Math.pow(avgConfort * avgConfort - avgConfort, 2) ))));
-					Collections.sort(results, (j1, j2)->(int)((j1.getNormDuration()*0.5 + j1.getNormConfort()*0.5) - (j2.getNormDuration()*0.5 + j2.getNormConfort()*0.5)));
+			case "duration + confort":
+				OptionalDouble moyConfort = strCJ1.mapToInt(cj -> (int) cj.getConfort()).average();
+				OptionalDouble moyDuration2 = strCJ2.mapToInt(cj -> cj.getDuration()).average();
+				double avgConfort = moyConfort.getAsDouble();
+				double avgDuration2 = moyDuration2.getAsDouble();
+				results.forEach(cj -> cj.setNormDuration((cj.getDuration() - avgDuration2)
+						/ (Math.sqrt(Math.pow(avgDuration2 * avgDuration2 - avgDuration2, 2)))));
+				results.forEach(cj -> cj.setNormConfort((cj.getConfort() - avgConfort)
+						/ (Math.sqrt(Math.pow(avgConfort * avgConfort - avgConfort, 2)))));
+				Collections.sort(results, (j1, j2) -> (int) ((j1.getNormDuration() * 0.5 + j1.getNormConfort() * 0.5)
+						- (j2.getNormDuration() * 0.5 + j2.getNormConfort() * 0.5)));
 				break;
 			}
 			ComposedJourney best = results.get(0);
 			println("best way : " + best);
-		}
-		else {
+		} else {
 			println("Pas de chemin trouvé");
 		}
 	}
@@ -253,18 +266,20 @@ public class TravellerAgent extends GuiAgent {
 	public void setCatalogs(final JourneysList catalogs) {
 		this.catalogs = catalogs;
 	}
-	
+
 	private void createTopicTrafficNews() {
-	    // Définition du topic
-	    TopicManagementHelper topicHelper = null;
-	    try {
-	      topicHelper = (TopicManagementHelper) getHelper(TopicManagementHelper.SERVICE_NAME);
-	      topic = topicHelper.createTopic(AlertAgent.TOPIC_TRAFFIC);
-	      topicHelper.register(topic);
-	    } catch (ServiceException e) {e.printStackTrace(); }
-	    println("Création du topic traffic ok");
+		// Définition du topic
+		TopicManagementHelper topicHelper = null;
+		try {
+			topicHelper = (TopicManagementHelper) getHelper(TopicManagementHelper.SERVICE_NAME);
+			topic = topicHelper.createTopic(AlertAgent.TOPIC_TRAFFIC);
+			topicHelper.register(topic);
+		} catch (ServiceException e) {
+			e.printStackTrace();
+		}
+		println("Création du topic traffic ok");
 	}
-	
+
 	/**
 	 * Ask a behaviour that wait for a traffic news.
 	 */
@@ -277,38 +292,61 @@ public class TravellerAgent extends GuiAgent {
 		addBehaviour(new AchieveREResponder(this, mt) {
 			@Override
 			protected ACLMessage handleRequest(ACLMessage request) {
-				println("Réception d'un message de "+ request.getSender().getLocalName() +" : "+ request.getContent());
+				println("Réception d'un message de " + request.getSender().getLocalName() + " : "
+						+ request.getContent());
 				ACLMessage result = request.createReply();
 				result.setPerformative(ACLMessage.AGREE);
-				
+
 				String receivedNews = request.getContent();
-				if(receivedNews != null && receivedNews.contains(" ")){
-					// Les champs de Mr Adam sont séparés par des espaces. Format : "blocage train pointA pointB"
+				if (receivedNews != null && receivedNews.contains(" ")) {
+					// Les champs de Mr Adam sont séparés par des espaces.
+					// Format : "blocage train pointA pointB"
 					// Exemple réel : "blocage from c to f"
 					String[] newsPart = receivedNews.split(" ");
-					//String newsType = newsPart[0];
-					//String newsMeans = newsPart[1];
+					// String newsType = newsPart[0];
+					// String newsMeans = newsPart[1];
 					String newsFrom = newsPart[2];
 					String newsTo = newsPart[4];
-	
-					if(catalogs != null){
-						if(catalogs.removeJourney(newsFrom,newsTo)){
-							println("Au moins un trajet supprimé.");
-							
-							if(from != null && !from.isEmpty()){
-								println("Recalcul automatique d'un itinéraire.");
-								buyJourney(from, to, departure, sortMode);
-							}else{
-								println("Le traveller n'a pas encore fait de recherche. Recalcul automatique impossible.");
+
+					if (catalogs != null) {
+						Hashtable<String, ArrayList<Journey>> catalogue = catalogs.getCatalog();
+						ArrayList<Journey> journeys = catalogue.get(newsFrom);
+						if(journeys != null){
+						for (Journey j : journeys) {
+							if (j.getStop().equals(newsTo)) {
+								j.setDuration(j.getDuration() * 10);
+								j.setArrivalDate(Journey.addTime(j.getDepartureDate(), j.getDuration()));
+
+								if (from != null && !from.isEmpty()) {
+									println("Recalcul automatique d'un itinéraire.");
+									computeComposedJourney(from, to, departure, sortMode);
+								} else {
+									println("Le traveller n'a pas encore fait de recherche. Recalcul automatique impossible.");
+								}
 							}
 						}
-					}else{
+						} else {
+							println("Le catalogue n'a pas été mis à jour car il n'y a aucun départ de "+ newsFrom);
+						}
+
+						// if(catalogs.removeJourney(newsFrom,newsTo)){
+						// println("Au moins un trajet supprimé.");
+						//
+						// if(from != null && !from.isEmpty()){
+						// println("Recalcul automatique d'un itinéraire.");
+						// buyJourney(from, to, departure, sortMode);
+						// }else{
+						// println("Le traveller n'a pas encore fait de
+						// recherche. Recalcul automatique impossible.");
+						// }
+						// }
+					} else {
 						println("Le catalogue n'a pas été mis à jour car il n'existe pas.");
 					}
-				}else{
+				} else {
 					println("Le message d'info traffic reçu n'est pas valide.");
 				}
-				
+
 				return result;
 			}
 		});

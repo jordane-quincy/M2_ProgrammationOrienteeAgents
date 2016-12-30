@@ -140,22 +140,26 @@ public class JourneysList implements Serializable {
 		System.out.println(journeys);
 	}
 
-	public boolean removeJourney(String _start, String _stop) {
-		boolean hasRemovedJourney = false;
-		if (_start != null && !_start.isEmpty() && _stop != null && !_stop.isEmpty()) {
-			// on recupere la liste des trajets au depart de _start
-			ArrayList<Journey> list = this.catalog.get(_start.toUpperCase());
-			if (list != null) {
-				for (Iterator<Journey> iterator = list.iterator(); iterator.hasNext();) {
-					Journey journey = iterator.next();
-					// si la destination est celle recherchee
-					if (journey.getStop().equalsIgnoreCase(_stop)) {
-						iterator.remove();
-						hasRemovedJourney = true;
-					}
-				}
-			}
-		}
-		return hasRemovedJourney;
+//	public boolean removeJourney(String _start, String _stop) {
+//		boolean hasRemovedJourney = false;
+//		if (_start != null && !_start.isEmpty() && _stop != null && !_stop.isEmpty()) {
+//			// on recupere la liste des trajets au depart de _start
+//			ArrayList<Journey> list = this.catalog.get(_start.toUpperCase());
+//			if (list != null) {
+//				for (Iterator<Journey> iterator = list.iterator(); iterator.hasNext();) {
+//					Journey journey = iterator.next();
+//					// si la destination est celle recherchee
+//					if (journey.getStop().equalsIgnoreCase(_stop)) {
+//						iterator.remove();
+//						hasRemovedJourney = true;
+//					}
+//				}
+//			}
+//		}
+//		return hasRemovedJourney;
+//	}
+	
+	public Hashtable<String, ArrayList<Journey>> getCatalog(){
+		return this.catalog;
 	}
 }

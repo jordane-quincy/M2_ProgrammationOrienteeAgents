@@ -80,6 +80,7 @@ public class AlertAgent extends GuiAgent {
 	 */
 	private void sendTrafficNews(final String from, final String to, final String type) {
 		String trafficNewsMessage = type +" from "+ from +" to "+ to;
+		trafficNewsMessage = trafficNewsMessage.toUpperCase();
 		window.println("sendTrafficNews : "+ trafficNewsMessage);
 		
 		//création du msg
