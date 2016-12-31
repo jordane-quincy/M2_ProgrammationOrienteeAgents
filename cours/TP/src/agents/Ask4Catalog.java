@@ -53,14 +53,18 @@ public class Ask4Catalog extends AchieveREInitiator {
 	@Override
 	@SuppressWarnings("rawtypes")
 	protected void handleAllResponses(final Vector responses) {
+//		System.out.println("Agent catalogue avant ask : "+ agent.getCatalogs());
 		final int nbAnswers = responses.size();
-		final JourneysList catalogs = new JourneysList();
+//		System.out.println("nbAnswers : "+ nbAnswers);
+		final JourneysList catalogs = (agent.getCatalogs() != null ? agent.getCatalogs() : new JourneysList());
+		agent.println("catalogue avant ask : "+ catalogs.getInfos());
 		for (int i = 0; i < nbAnswers; i++) {
 			final ACLMessage ans = (ACLMessage) responses.get(i);
 			if (ans.getPerformative() == ACLMessage.AGREE) {
 				JourneysList receivedCatalog = null;
 				try {
 					receivedCatalog = (JourneysList) ans.getContentObject();
+					agent.println("receivedCatalog de "+ ans.getSender().getLocalName() +" : "+ receivedCatalog.getInfos());
 				} catch (UnreadableException e) {
 					e.printStackTrace();
 				}
@@ -70,13 +74,13 @@ public class Ask4Catalog extends AchieveREInitiator {
 		}
 		//sort cataglos depending on preference
 		//On récupère le sortMode from the traveller agent
-		String sortMode = agent.getSortMode();
-		TravellerGui window = agent.getWindow();
-		window.println("pref : " + agent.getSortMode());
-		
+//		String sortMode = agent.getSortMode();
+//		TravellerGui window = agent.getWindow();
+//		window.println("pref : " + agent.getSortMode());
 		
 		
 		agent.setCatalogs(catalogs);
+		agent.println("catalogue apres ask : "+ agent.getCatalogs().getInfos());
 	}
 
 }

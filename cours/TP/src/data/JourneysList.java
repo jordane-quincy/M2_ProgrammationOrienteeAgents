@@ -49,13 +49,23 @@ public class JourneysList implements Serializable {
 	}
 
 	public void addJourneys(JourneysList _list) {
-		Iterator<Journey> localIterator2;
-		for (Iterator<ArrayList<Journey>> localIterator1 = _list.catalog.values().iterator(); localIterator1
-				.hasNext(); localIterator2.hasNext()) {
-			ArrayList<Journey> l = localIterator1.next();
-			localIterator2 = l.iterator(); // continue;
-			Journey j = localIterator2.next();
-			addJourney(j.start, j.stop, j.means, j.departureDate, j.duration, j.cost, j.co2, j.confort);
+//		Iterator<Journey> localIterator2;
+//		for (Iterator<ArrayList<Journey>> localIterator1 = _list.catalog.values().iterator(); localIterator1
+//				.hasNext(); localIterator2.hasNext()) {
+//			ArrayList<Journey> l = localIterator1.next();
+//			localIterator2 = l.iterator(); // continue;
+//			Journey j = localIterator2.next();
+//			
+//			System.out.println("addJourneys : "+ j.start +", "+j.stop+", "+j.means+", "+j.departureDate+", "+j.duration+", "+j.cost+", "+j.co2+", "+j.confort);
+//			addJourney(j.start, j.stop, j.means, j.departureDate, j.duration, j.cost, j.co2, j.confort);
+//		}
+		
+		for (String depart : _list.getCatalog().keySet()){
+			ArrayList<Journey> lstJourney = _list.getCatalog().get(depart);
+			for(Journey j : lstJourney){
+//				System.out.println("addJourneys : "+ j.start +", "+j.stop+", "+j.means+", "+j.departureDate+", "+j.duration+", "+j.cost+", "+j.co2+", "+j.confort);
+				addJourney(j.start, j.stop, j.means, j.departureDate, j.duration, j.cost, j.co2, j.confort);
+			}
 		}
 	}
 
@@ -161,5 +171,21 @@ public class JourneysList implements Serializable {
 	
 	public Hashtable<String, ArrayList<Journey>> getCatalog(){
 		return this.catalog;
+	}
+	
+	public String getInfos(){
+		StringBuilder sb = new StringBuilder();
+		if(this.catalog != null){
+			sb.append("nb depart : "+ this.catalog.size());
+			int nbArrivee = 0;
+			for(String depart : this.catalog.keySet()){
+				nbArrivee += this.catalog.get(depart).size();
+			}
+			sb.append(" nb arrivee : "+ nbArrivee);
+		}else{
+			sb.append("JourneysList null");
+		}
+		
+		return sb.toString();
 	}
 }

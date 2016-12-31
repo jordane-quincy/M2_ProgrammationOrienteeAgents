@@ -52,7 +52,7 @@ public class AgenceAgent extends GuiAgent {
 //		fromCSV2Catalog("./resources/csv/catalog1.csv");
 //		buildSampleCatalog();
 		
-		window.println("here is my catalog : ");
+		window.println("Agence catalog : " + catalog.getInfos());
 		window.println(catalog.toString());
 
 		AgentToolsEA.register(this, "travel agency", "seller");

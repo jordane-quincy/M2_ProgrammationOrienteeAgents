@@ -43,12 +43,14 @@ public class AlertAgentGui extends JFrame {
 	//private JLabel lblPrice;
 	private JComboBox<String> jListFrom;
 	private JComboBox<String> jListTo;
+	private JComboBox<String> jListMean;
 	private JComboBox<String> jListCriteria;
 	//private JSlider sliderTime;
 
 	private String departure;
 	private String arrival;
 	private int nbElements;
+	private String mean;
 
 	public AlertAgentGui(AlertAgent agentAlert) {
 		this.setBounds(0, 300, 600, 400);
@@ -83,12 +85,14 @@ public class AlertAgentGui extends JFrame {
 			try {
 				departure = (String) jListFrom.getSelectedItem();
 				arrival = (String) jListTo.getSelectedItem();
+				mean = (String) jListMean.getSelectedItem();
 				nbElements = 1;
 				// SEND AN GUI EVENT TO THE AGENT !!!
 				GuiEvent guiEv = new GuiEvent(this, AlertAgent.SEND_NEWS);
 				guiEv.addParameter(departure);
 				guiEv.addParameter(arrival);
 				guiEv.addParameter(jListCriteria.getSelectedItem());
+				guiEv.addParameter(mean);
 				myAgent.postGuiEvent(guiEv);
 				// END SEND AN GUI EVENT TO THE AGENT !!!
 			} catch (Exception e) {
@@ -126,6 +130,10 @@ public class AlertAgentGui extends JFrame {
 		jListCriteria = new JComboBox<>(new String[] { "blocage" });
 		jListCriteria.setSelectedIndex(0);
 		p.add(jListCriteria);
+
+		jListMean = new JComboBox<>(new String[] { "BUS", "CAR", "TRAIN" });
+		jListMean.setSelectedIndex(0);
+		p.add(jListMean);
 
 		p.add(addButton);
 

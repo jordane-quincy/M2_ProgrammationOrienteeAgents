@@ -134,13 +134,11 @@ public class TravellerAgent extends GuiAgent {
 			protected void onWake() {
 
 				if (catalogs != null) {
-					println("Traveller catalog : ");
-					println(" -> " + catalogs);
+					println("Traveller catalog : " + catalogs.getInfos());
 					println(preference);
 					println("*****************************************************");
 					computeComposedJourney(from, to, departure, preference);
-				}
-				if (catalogs == null) {
+				}else {
 					println("I have no catalog !!! ");
 				}
 			}
@@ -157,10 +155,8 @@ public class TravellerAgent extends GuiAgent {
 		List<String> via = new ArrayList<String>();
 		ArrayList<ComposedJourney> results = new ArrayList<ComposedJourney>();
 
-		println("On recherche un chemin de : " + from);
-		println("Pour aller vers : " + to);
-		println("A une heure : " + departure);
-		println("catalog : " + catalogs);
+		println("On recherche un chemin de : " + from +" vers : " + to +" A une heure : " + departure);
+//		println("catalog : " + catalogs);
 		// 120 = durée qu'on veut bien attendre (ou décallage)
 		found = catalogs.findIndirectJourney(from.trim().toUpperCase(), to.trim().toUpperCase(), departure, 120,
 				currentJourney, via, results);
@@ -301,30 +297,40 @@ public class TravellerAgent extends GuiAgent {
 				if (receivedNews != null && receivedNews.contains(" ")) {
 					// Les champs de Mr Adam sont séparés par des espaces.
 					// Format : "blocage train pointA pointB"
-					// Exemple réel : "blocage from c to f"
+					// Exemple réel : "BLOCAGE CAR FROM C TO F"
 					String[] newsPart = receivedNews.split(" ");
 					// String newsType = newsPart[0];
-					// String newsMeans = newsPart[1];
-					String newsFrom = newsPart[2];
-					String newsTo = newsPart[4];
+					String newsMeans = newsPart[1];
+					String newsFrom = newsPart[3];
+					String newsTo = newsPart[5];
 
 					if (catalogs != null) {
 						Hashtable<String, ArrayList<Journey>> catalogue = catalogs.getCatalog();
 						ArrayList<Journey> journeys = catalogue.get(newsFrom);
 						if(journeys != null){
-						for (Journey j : journeys) {
-							if (j.getStop().equals(newsTo)) {
-								j.setDuration(j.getDuration() * 10);
-								j.setArrivalDate(Journey.addTime(j.getDepartureDate(), j.getDuration()));
-
-								if (from != null && !from.isEmpty()) {
-									println("Recalcul automatique d'un itinéraire.");
-									computeComposedJourney(from, to, departure, sortMode);
-								} else {
-									println("Le traveller n'a pas encore fait de recherche. Recalcul automatique impossible.");
+							for (Journey j : journeys) {
+								if (j.getStop().equals(newsTo) && j.getMeans().equals(newsMeans)) {
+									if("TRAIN".equals(newsMeans)){
+										// alerte train : changer les dates de départ et d'arrivée
+										//on part plus tard mais le trajet n'est pas allonge
+										int retard = 15;
+										j.setDepartureDate(Journey.addTime(j.getDepartureDate(), retard));
+										j.setArrivalDate(Journey.addTime(j.getDepartureDate(), j.getDuration()));
+									}else{
+										// alerte route : changer les durée et date d'arrivée
+										//on part a la meme heure mais on arrive beaucoup plus tard
+										j.setDuration(j.getDuration() * 10);
+										j.setArrivalDate(Journey.addTime(j.getDepartureDate(), j.getDuration()));
+									}
 								}
 							}
-						}
+							
+							if (from != null && !from.isEmpty()) {
+								println("Recalcul automatique d'un itinéraire.");
+								computeComposedJourney(from, to, departure, sortMode);
+							} else {
+								println("Le traveller n'a pas encore fait de recherche. Recalcul automatique impossible.");
+							}
 						} else {
 							println("Le catalogue n'a pas été mis à jour car il n'y a aucun départ de "+ newsFrom);
 						}
