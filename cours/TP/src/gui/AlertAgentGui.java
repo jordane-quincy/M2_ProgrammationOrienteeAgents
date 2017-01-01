@@ -44,7 +44,7 @@ public class AlertAgentGui extends JFrame {
 	private JComboBox<String> jListFrom;
 	private JComboBox<String> jListTo;
 	private JComboBox<String> jListMean;
-	private JComboBox<String> jListCriteria;
+//	private JComboBox<String> jListCriteria;
 	//private JSlider sliderTime;
 
 	private String departure;
@@ -91,7 +91,7 @@ public class AlertAgentGui extends JFrame {
 				GuiEvent guiEv = new GuiEvent(this, AlertAgent.SEND_NEWS);
 				guiEv.addParameter(departure);
 				guiEv.addParameter(arrival);
-				guiEv.addParameter(jListCriteria.getSelectedItem());
+//				guiEv.addParameter(jListCriteria.getSelectedItem());
 				guiEv.addParameter(mean);
 				myAgent.postGuiEvent(guiEv);
 				// END SEND AN GUI EVENT TO THE AGENT !!!
@@ -127,11 +127,11 @@ public class AlertAgentGui extends JFrame {
 		});
 		p.add(sliderTime);*/
 
-		jListCriteria = new JComboBox<>(new String[] { "blocage" });
-		jListCriteria.setSelectedIndex(0);
-		p.add(jListCriteria);
+//		jListCriteria = new JComboBox<>(new String[] { "blocage" });
+//		jListCriteria.setSelectedIndex(0);
+//		p.add(jListCriteria);
 
-		jListMean = new JComboBox<>(new String[] { "BUS", "CAR", "TRAIN" });
+		jListMean = new JComboBox<>(new String[] { "rail", "route" });
 		jListMean.setSelectedIndex(0);
 		p.add(jListMean);
 

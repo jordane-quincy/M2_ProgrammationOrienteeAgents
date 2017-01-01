@@ -3,6 +3,9 @@ package agents;
 import java.awt.Color;
 import java.util.Arrays;
 
+import com.opencsv.CSVParserBuilder;
+import com.opencsv.CSVWriter;
+
 import gui.AlertAgentGui;
 import jade.core.AID;
 import jade.core.ServiceException;
@@ -75,13 +78,16 @@ public class AlertAgent extends GuiAgent {
 	 *            origin
 	 * @param to
 	 *            arrival
-	 * @param type
-	 *            problem type
 	 * @param mean
 	 *            transport mode impacted
 	 */
-	private void sendTrafficNews(final String from, final String to, final String type, final String mean) {
-		String trafficNewsMessage = type +" "+ mean +" from "+ from +" to "+ to;
+	private void sendTrafficNews(final String from, final String to, final String mean) {
+//		l'alerte doit être de type
+//		rail,depart,destination
+//		ou
+//		route,depart,destination
+
+		String trafficNewsMessage = mean +","+ from +","+ to;
 		trafficNewsMessage = trafficNewsMessage.toUpperCase();
 		window.println("sendTrafficNews : "+ trafficNewsMessage);
 		
@@ -109,7 +115,7 @@ public class AlertAgent extends GuiAgent {
 		}
 		if (eventFromGui.getType() == AlertAgent.SEND_NEWS) {
 			sendTrafficNews((String) eventFromGui.getParameter(0), (String) eventFromGui.getParameter(1),
-					(String) eventFromGui.getParameter(2), (String) eventFromGui.getParameter(3));
+					(String) eventFromGui.getParameter(2));
 		}
 	}
 

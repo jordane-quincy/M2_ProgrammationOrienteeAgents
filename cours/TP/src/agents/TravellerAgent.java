@@ -3,8 +3,10 @@ package agents;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.OptionalDouble;
 import java.util.stream.Stream;
 
@@ -43,6 +45,8 @@ public class TravellerAgent extends GuiAgent {
 	private String from;
 	private String to;
 	private int departure;
+	
+	private Map<String,String> mapMoyenDeTransportParTypeDeNews = null;
 
 	/**
 	 * preference between journeys -, cost, co2, duration or confort ("-" = cost
@@ -294,23 +298,23 @@ public class TravellerAgent extends GuiAgent {
 				result.setPerformative(ACLMessage.AGREE);
 
 				String receivedNews = request.getContent();
-				if (receivedNews != null && receivedNews.contains(" ")) {
-					// Les champs de Mr Adam sont séparés par des espaces.
-					// Format : "blocage train pointA pointB"
-					// Exemple réel : "BLOCAGE CAR FROM C TO F"
-					String[] newsPart = receivedNews.split(" ");
-					// String newsType = newsPart[0];
-					String newsMeans = newsPart[1];
-					String newsFrom = newsPart[3];
-					String newsTo = newsPart[5];
+				if (receivedNews != null && receivedNews.contains(",")) {
+					//l'alerte doit être de type
+					//rail,depart,destination
+					//ou
+					//route,depart,destination
+					String[] newsPart = receivedNews.split(",");
+					String newsMeans = newsPart[0];
+					String newsFrom = newsPart[1];
+					String newsTo = newsPart[2];
 
 					if (catalogs != null) {
 						Hashtable<String, ArrayList<Journey>> catalogue = catalogs.getCatalog();
 						ArrayList<Journey> journeys = catalogue.get(newsFrom);
 						if(journeys != null){
 							for (Journey j : journeys) {
-								if (j.getStop().equals(newsTo) && j.getMeans().equals(newsMeans)) {
-									if("TRAIN".equals(newsMeans)){
+								if (j.getStop().equals(newsTo) && isJourneyImpactedByNews(newsMeans, j.getMeans())) {
+									if("rail".equalsIgnoreCase(newsMeans)){
 										// alerte train : changer les dates de départ et d'arrivée
 										//on part plus tard mais le trajet n'est pas allonge
 										int retard = 15;
@@ -356,6 +360,30 @@ public class TravellerAgent extends GuiAgent {
 				return result;
 			}
 		});
+	}
+	
+	private boolean isJourneyImpactedByNews(String newsMeans, String journeyMeans){
+		boolean isMatching = false;
+		if (mapMoyenDeTransportParTypeDeNews == null){
+			mapMoyenDeTransportParTypeDeNews = new HashMap<String,String>();
+			
+			mapMoyenDeTransportParTypeDeNews.put("TRAIN", "RAIL");
+			
+			mapMoyenDeTransportParTypeDeNews.put("CAR","ROUTE");
+			mapMoyenDeTransportParTypeDeNews.put("BUS", "ROUTE");
+		}
+		
+		String typeDeNews = mapMoyenDeTransportParTypeDeNews.get(journeyMeans);
+		
+		if(typeDeNews != null){
+			if(typeDeNews.equalsIgnoreCase(newsMeans)){
+				isMatching = true;
+			}
+		}else{
+			println("Erreur, moyen de transport inconnu : "+ journeyMeans);
+		}
+		
+		return isMatching;
 	}
 
 }
